@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="FR">
+
+<head>
+ <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mes Colis • Demandeur</title>
+    <link rel="stylesheet" href="/app/static/style.css">
+
+</head>
+
+
+<body>
+<div class="sidebar">
+    <span class = titre-nav> Demandeur </span>
+    <ul class="liste">
+       
+        <li class="autre-page-nav">
+            <span>Mes Colis</span>
+            <ul class="liste-colis-nav">
+
+                <!-- jinja permettant la récupération de la liste des colis pour faire une sidebar dynamique -->
+                {% if colis %}
+                    {% for c in colis %}
+                        <li>{{ c.nom }} - {{ c.etat }}</li>
+                    {% endfor %}
+                {% else %}
+                    <li>Aucun colis disponible</li>
+                {% endif %}
+            </ul>
+        </li>
+        
+       
+        <li class="page-actuelle-nav">
+           <a href="/app/templates/Demandeur/Notifications.html">Notifications</span>
+        </li>
+    </ul>
+</div>
+
+
+
+
+
+
+</body>
+
+
+
+
+
+
+
+
+
+
+
+</html>
