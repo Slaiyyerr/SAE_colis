@@ -4,7 +4,7 @@
 
 {% block content %}
 <div class="container">
-    <h1 class="titre">Tableau de bord Editeur</h1>
+    <h1 class="titre">Tableau de bord - Editeur</h1>
     <p class="sous-titre">Gestion des bons de commande et fournisseurs</p>
 
     <!-- Statistiques commandes -->
@@ -15,15 +15,15 @@
         </div>
         <div class="stat-card">
             <div class="number waiting">{{ stats.commandes_en_attente }}</div>
-            <div class="label">A valider</div>
+            <div class="label">À valider</div>
         </div>
         <div class="stat-card">
             <div class="number ok">{{ stats.commandes_validees }}</div>
-            <div class="label">Validees</div>
+            <div class="label">Validées</div>
         </div>
         <div class="stat-card">
             <div class="number probleme">{{ stats.commandes_non_validees }}</div>
-            <div class="label">Refusees</div>
+            <div class="label">Refusées</div>
         </div>
         <div class="stat-card">
             <div class="number">{{ stats.total_fournisseurs }}</div>
@@ -34,7 +34,7 @@
     <div class="grille-stats">
         <!-- Commandes a traiter -->
         <div class="carte">
-            <h2 class="petit-titre">Commandes a valider</h2>
+            <h2 class="petit-titre">Commandes à valider</h2>
             {% if stats.commandes_a_valider %}
             <div class="tableau-container">
                 <table class="tableau">
@@ -42,7 +42,7 @@
                         <tr>
                             <th>N BC</th>
                             <th>Fournisseur</th>
-                            <th>Departement</th>
+                            <th>Département</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -59,7 +59,7 @@
                 </table>
             </div>
             {% else %}
-            <p class="message-vide">Toutes les commandes sont validees.</p>
+            <p class="message-vide">Toutes les commandes ont été validées.</p>
             {% endif %}
             <a href="{{ url_for('commandes_list') }}?statut=en_attente" class="lien">Voir toutes les commandes en attente</a>
         </div>
@@ -89,7 +89,7 @@
             {% else %}
             <p class="message-vide">Aucune statistique disponible.</p>
             {% endif %}
-            <a href="{{ url_for('fournisseurs_list') }}" class="lien">Gerer les fournisseurs</a>
+            <a href="{{ url_for('fournisseurs_list') }}" class="lien">Gérer les fournisseurs -></a>
         </div>
     </div>
 
@@ -106,7 +106,7 @@
 
     <!-- Commandes recentes -->
     <div class="carte" id="activite_recente">
-        <h2 class="petit-titre">Dernieres commandes creees</h2>
+        <h2 class="petit-titre">Dernières commandes créées</h2>
         {% if stats.commandes_recentes %}
         <div class="tableau-container">
             <table class="tableau">
@@ -145,7 +145,7 @@
             </table>
         </div>
         {% else %}
-        <p class="message-vide">Aucune commande recente.</p>
+        <p class="message-vide">Aucune commande récente.</p>
         {% endif %}
     </div>
 </div>
