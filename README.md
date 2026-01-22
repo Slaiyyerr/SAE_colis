@@ -261,7 +261,7 @@ SAE_colis/
 | **BOUSLAMA Adel**  | DAO & Services         | Développement des DAO, logique métier, liaison avec les controllers                |
 | **KEBBICHE Rayan** | Services & Controllers | Développement des services et controllers, liaison back-end / front-end avec Jinja |
 | **BENANNI Fares** | Front-end              | Développement de l’interface utilisateur                                           |
-| **ATANASE Gabin Ateba** | Front-end              | Développement de l’interface utilisateur                                           |
+| **ATANASE Gabin Ateba** | Modèles            | Développement des models                                          |
 
 
 
