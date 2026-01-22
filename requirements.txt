@@ -1,0 +1,21 @@
+# =============================================================================
+# Dependances Python pour l'application Suivi Colis
+# =============================================================================
+# Installation : pip install -r requirements.txt
+# =============================================================================
+
+# Framework web
+Flask==3.0.0
+Werkzeug==3.0.1
+
+# Protection CSRF pour les formulaires
+Flask-WTF==1.2.1
+
+# Connecteur MySQL
+mysql-connector-python==8.2.0
+
+# Chargement des variables d'environnement (.env)
+python-dotenv==1.0.0
+
+# Requetes HTTP (pour validation tickets CAS)
+requests==2.31.0

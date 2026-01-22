@@ -1,0 +1,60 @@
+{% extends 'layout.html' %}
+
+{% block title %}{% if utilisateur %}Modifier{% else %}Nouvel{% endif %} utilisateur{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="titre">{% if utilisateur %}Modifier l'utilisateur{% else %}Nouvel utilisateur{% endif %}</h1>
+    
+    <div class="carte">
+        <form class ="formulaire"method="POST">
+            <div class="form-groupe">
+                <label for="email">E-mail <span>*</span></label>
+                <input class="input" type="email" id="email" name="email" value="{{ utilisateur.email if utilisateur else '' }}" required>
+            </div>
+            
+            <div class="form-groupe">
+                <label for="mot_de_passe">Mot de passe <span>*</span> {% if utilisateur %}<span id="laisser-vide">Laissez le champ vide si vous ne souhaitez pas effectuer de modification</span>{% else %} <span id="laisser-vide">Par défaut "password" </span> {% endif %}</label>
+                <input class="input" type="password" id="mot_de_passe" name="mot_de_passe" placeholder="{% if utilisateur %}Nouveau mot de passe{% else %}password{% endif %}">
+            </div>
+            
+            <div class="formulaire">
+                <div class="form-groupe">
+                    <label for="prenom">Prénom <span>*</span></label>
+                    <input class="input" type="text" id="prenom" name="prenom" value="{{ utilisateur.prenom if utilisateur else '' }}" required>
+                </div>
+                <div class="form-groupe">
+                    <label for="nom">Nom <span>*</span></label>
+                    <input class="input" type="text" id="nom" name="nom" value="{{ utilisateur.nom if utilisateur else '' }}" required>
+                </div>
+            </div>
+            
+            <div class="formulaire">
+                <div class="form-groupe">
+                    <label for="role">Rôle <span>*</span></label>
+                    <select class="input" id="role" name="role" required>
+                        <option value="demandeur" {% if utilisateur and utilisateur.role == 'demandeur' %}selected{% endif %}>Demandeur</option>
+                        <option value="editeur" {% if utilisateur and utilisateur.role == 'editeur' %}selected{% endif %}>Editeur</option>
+                        <option value="responsable_colis" {% if utilisateur and utilisateur.role == 'responsable_colis' %}selected{% endif %}>Responsable colis</option>
+                        <option value="admin" {% if utilisateur and utilisateur.role == 'admin' %}selected{% endif %}>Admin</option>
+                    </select>
+                </div>
+                <div class="form-groupe">
+                    <label for="id_departement">Département</label>
+                    <select class="input" id="id_departement" name="id_departement">
+                        <option value="">-- Aucun --</option>
+                        {% for d in departements %}
+                        <option value="{{ d.id_departement }}" {% if utilisateur and utilisateur.id_departement == d.id_departement %}selected{% endif %}>{{ d.nom_departement }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            
+            <div class="bouton-formulaire">
+                <button type="submit" class="bouton-ok">{% if utilisateur %}Enregistrer{% else %}Creer{% endif %}</button>
+                <a href="{{ url_for('admin_utilisateurs') }}" class="bouton">Annuler</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

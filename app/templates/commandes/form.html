@@ -1,0 +1,146 @@
+{% extends "layout.html" %}
+
+{% block title %}{% if commande %}Modifier{% else %}Nouvelle{% endif %} commande{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="titre">{% if commande %}Modifier la commande {{ commande.numero_bc }}{% else %}Nouvelle commande{% endif %}</h1>
+    
+    <div class="carte">
+        <form method="POST" enctype="multipart/form-data" class="formulaire">
+            <div class="form-groupe">
+                <label for="numero_bc">Numéro de bon de commande <span>*</span></label>
+                <input type="text" id="numero_bc" name="numero_bc" class="input" required
+                       value="{{ commande.numero_bc if commande else '' }}"
+                       placeholder="Ex: BC-2025-001">
+            </div>
+            
+            <div class="form-groupe">
+                <label for="id_fournisseur">Fournisseur <span>*</span></label>
+                <select id="id_fournisseur" name="id_fournisseur" class="input" required>
+                    <option value="">-- Choisir --</option>
+                    {% for f in fournisseurs %}
+                    <option value="{{ f.id_fournisseur }}" {% if commande and commande.id_fournisseur == f.id_fournisseur %}selected{% endif %}>
+                        {{ f.nom_societe }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="form-groupe">
+                <label for="id_departement">Département destinataire <span>*</span></label>
+                <select id="id_departement" name="id_departement" class="input" required>
+                    <option value="">-- Choisir --</option>
+                    {% for d in departements %}
+                    <option value="{{ d.id_departement }}" {% if commande and commande.id_departement == d.id_departement %}selected{% endif %}>
+                        {{ d.nom_departement }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="form-groupe">
+                <label for="id_demandeur">Demandeur</label>
+                <select id="id_demandeur" name="id_demandeur" class="input">
+                    <option value="">-- Aucun (optionnel) --</option>
+                    {% for u in demandeurs %}
+                    <option value="{{ u.id_utilisateur }}" {% if commande and commande.id_demandeur == u.id_utilisateur %}selected{% endif %}>
+                        {{ u.prenom }} {{ u.nom }}{% if u.nom_departement %} ({{ u.nom_departement }}){% endif %}
+                    </option>
+                    {% endfor %}
+                </select>
+                <small class="text-muted">Personne qui attend le colis</small>
+            </div>
+            
+            <div class="form-groupe">
+                <label for="date_livraison_prevue">Date de livraison prévue</label>
+                <input type="date" id="date_livraison_prevue" name="date_livraison_prevue" class="input"
+                       value="{{ commande.date_livraison_prevue.strftime('%Y-%m-%d') if commande and commande.date_livraison_prevue else '' }}">
+            </div>
+            
+            {% if commande %}
+            <div class="form-groupe">
+                <label for="statut_global">Statut</label>
+                <select id="statut_global" name="statut_global" class="input">
+                    <option value="en_attente" {% if commande.statut_global == 'en_attente' %}selected{% endif %}>En attente</option>
+                    <option value="validee" {% if commande.statut_global == 'validee' %}selected{% endif %}>Validée</option>
+                    <option value="non_validee" {% if commande.statut_global == 'non_validee' %}selected{% endif %}>Non validée (refusée)</option>
+                    <option value="en_cours" {% if commande.statut_global == 'en_cours' %}selected{% endif %}>En cours</option>
+                    <option value="recue" {% if commande.statut_global == 'recue' %}selected{% endif %}>Reçue</option>
+                    <option value="annulee" {% if commande.statut_global == 'annulee' %}selected{% endif %}>Annulée</option>
+                </select>
+            </div>
+            {% endif %}
+            
+            <div class="form-groupe">
+                <label for="fichier_bc">Bon de commande (PDF ou image)</label>
+                <input type="file" id="fichier_bc" name="fichier_bc" class="input" accept=".pdf,.png,.jpg,.jpeg,.gif">
+                {% if commande and commande.fichier_bc_url %}
+                <p class="text-muted">
+                    📄 <a href="{{ commande.fichier_bc_url }}" target="_blank">Voir le fichier actuel</a>
+                </p>
+                {% endif %}
+            </div>
+            
+            <div class="form-groupe">
+                <label for="notes">Notes</label>
+                <textarea id="notes" name="notes" rows="3" class="input" placeholder="Informations complémentaires...">{{ commande.notes if commande else '' }}</textarea>
+            </div>
+            
+            {% if not commande %}
+            <h2 class="petit-titre">Articles commandés</h2>
+            <div id="lignes-container">
+                <div class="ligne-item flex">
+                    <div class="form-groupe">
+                        <label>Référence</label>
+                        <input type="text" name="ref_produit[]" class="input" placeholder="REF-001">
+                    </div>
+                    <div class="form-groupe">
+                        <label>Désignation <span>*</span></label>
+                        <input type="text" name="designation[]" class="input" placeholder="Description de l'article" required>
+                    </div>
+                    <div class="form-groupe">
+                        <label>Qté</label>
+                        <input type="number" name="quantite[]" class="input" value="1" min="1" style="width: 80px;">
+                    </div>
+                </div>
+            </div>
+            
+            <button type="button" class="bouton bouton-secondaire" onclick="ajouterLigne()">
+                + Ajouter une ligne
+            </button>
+            
+            <script>
+            function ajouterLigne() {
+                const container = document.getElementById('lignes-container');
+                const div = document.createElement('div');
+                div.className = 'ligne-item flex';
+                div.innerHTML = `
+                    <div class="form-groupe">
+                        <input type="text" name="ref_produit[]" class="input" placeholder="REF-001">
+                    </div>
+                    <div class="form-groupe">
+                        <input type="text" name="designation[]" class="input" placeholder="Description" required>
+                    </div>
+                    <div class="form-groupe">
+                        <input type="number" name="quantite[]" class="input" value="1" min="1" style="width: 80px;">
+                    </div>
+                    <button type="button" class="bouton danger" onclick="this.parentElement.remove()">X</button>
+                `;
+                container.appendChild(div);
+            }
+            </script>
+            {% endif %}
+            
+            <div class="bouton-formulaire">
+                <button type="submit" class="bouton-ok">
+                    {% if commande %}Enregistrer{% else %}Créer la commande{% endif %}
+                </button>
+                <a href="{% if commande %}{{ url_for('commande_detail', id=commande.id_commande) }}{% else %}{{ url_for('commandes_list') }}{% endif %}" class="bouton">
+                    Annuler
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

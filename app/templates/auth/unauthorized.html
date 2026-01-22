@@ -1,0 +1,29 @@
+{% extends 'layout.html' %}
+
+{% block title %}Accès refusé{% endblock %}
+
+{% block content %}
+<div class="auth-card">
+    <h1 class="titre">Accès refusé</h1>
+    <p class="sous-titre">Erreur 403</p>
+    
+    <p class="texte">Vous n'avez pas les droits nécessaires pour accéder à cette page.</p>
+    
+    <div class="auth-info">
+        <strong>Votre rôle actuel :</strong> 
+        {% if session.user.role == 'admin' %}
+            Administrateur
+        {% elif session.user.role == 'responsable_colis' %}
+            Responsable colis
+        {% elif session.user.role == 'editeur' %}
+            Éditeur
+        {% else %}
+            Demandeur
+        {% endif %}
+    </div>
+    
+    <div class="bouton-formulaire">
+        <a href="{{ url_for('home') }}" class="bouton-ok">Retour à l'accueil</a>
+    </div>
+</div>
+{% endblock %}

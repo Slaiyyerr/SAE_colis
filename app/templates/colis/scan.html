@@ -1,0 +1,45 @@
+{% extends 'layout.html' %}
+
+{% block title %}Scanner un colis{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="titre">Scanner un colis</h1>
+    
+    <span class="flex">Filtres :
+        <a href="{{ url_for('colis_list') }}" class="bouton bouton-secondaire">Tous</a>
+        <a href="{{ url_for('colis_en_attente') }}" class="bouton bouton-secondaire">En attente</a>
+        <a href="{{ url_for('colis_a_distribuer') }}" class="bouton bouton-secondaire">À distribuer</a>
+        <a href="{{ url_for('colis_list', statut='livre') }}" class="bouton bouton-secondaire">Livrés</a>
+        <a href="{{ url_for('colis_list', statut='probleme') }}" class="bouton bouton-secondaire">Problèmes</a>
+        <span id="rechercher">
+            <a href="{{ url_for('colis_search') }}" class="bouton bouton-secondaire">Rechercher</a>
+            <a href="{{ url_for('colis_scan') }}" class="bouton bouton-secondaire bouton-actif">+ Scanner</a>
+        </span>
+    </span>
+
+    <div class="carte">
+        <h2 class="petit-titre">Scan de code-barres</h2>
+        
+        <div class="alerte alerte-info">
+            <strong>Fonctionnalité à venir</strong><br>
+            L'interface de scan par caméra sera implémentée ultérieurement.
+        </div>
+        
+        <p class="texte">En attendant, utilisez la recherche manuelle :</p>
+        <form action="{{ url_for('colis_search') }}" method="GET" class="flex">
+            <input type="text" name="q" placeholder="Entrez le numéro de suivi" class="input">
+            <button type="submit" class="bouton-ok">Rechercher</button>
+        </form>
+    </div>
+    
+    <div class="carte">
+        <h2 class="petit-titre">Zone de scan</h2>
+        <div class="message-vide">
+            <p>Caméra non disponible</p>
+        </div>
+    </div>
+    
+    <a href="{{ url_for('colis_list') }}" class="bouton">Retour</a>
+</div>
+{% endblock %}

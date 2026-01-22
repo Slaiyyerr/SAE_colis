@@ -1,0 +1,34 @@
+{% extends "layout.html" %}
+
+{% block title %}{% if departement %}Modifier{% else %}Nouveau{% endif %} département{% endblock %}
+
+{% block content %}
+<h1 class="titre">{% if departement %}Modifier le département{% else %}Ajouter un département{% endif %}</h1>
+        
+    <div class="carte">
+        
+        <form class='formulaire' method="POST">
+            <div class="form-groupe">
+                <label  for="nom_departement">Nom du département <span>*</span></label>
+                <input class="input" type="text" id="nom_departement" name="nom_departement" required
+                       value="{{ departement.nom_departement if departement else '' }}"
+                       placeholder="Ex: Informatique, GEA, GEII...">
+            </div>
+            
+            <div class="form-groupe">
+                <label for="lieu_livraison">Emplacement de livraison</label>
+                <input class="input" type="text" id="lieu_livraison" name="lieu_livraison"
+                       value="{{ departement.lieu_livraison if departement else '' }}"
+                       placeholder="Ex: Batiment A - 2ème etage - Secrétariat">
+            </div>
+            
+            <div class="bouton-formulaire">
+                <button class="bouton" type="submit" class="bouton">
+                    {% if departement %}Enregistrer{% else %}Ajouter{% endif %}
+                </button>
+                <a href="{{ url_for('admin_departements') }}" class="bouton">Annuler</a>
+            </div>
+        </form>
+    </div>
+
+{% endblock %}

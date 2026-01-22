@@ -1,0 +1,51 @@
+{% extends "layout.html" %}
+
+{% block title %}Nouveau colis{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="titre">Nouveau colis</h1>
+    
+    <div class="carte">
+        <div class="auth-info">
+            <strong>Commande :</strong> {{ commande.numero_bc }}<br>
+            <strong>Bon de livraison :</strong> {{ bl.num_bl_fournisseur or '#' ~ bl.id_bl }}
+        </div>
+        
+        <form method="POST" class="formulaire">
+            <div class="form-groupe">
+                <label for="num_suivi_transporteur">Numéro de suivi</label>
+                <input type="text" id="num_suivi_transporteur" name="num_suivi_transporteur" class="input"
+                       placeholder="Ex: 6A18987970674">
+            </div>
+            
+            <div class="form-groupe">
+                <label for="nom_transporteur">Transporteur</label>
+                <select id="nom_transporteur" name="nom_transporteur" class="input">
+                    <option value="">-- Choisir --</option>
+                    <option value="Colissimo">Colissimo</option>
+                    <option value="Chronopost">Chronopost</option>
+                    <option value="La Poste">La Poste</option>
+                    <option value="DHL">DHL</option>
+                    <option value="UPS">UPS</option>
+                    <option value="FedEx">FedEx</option>
+                    <option value="GLS">GLS</option>
+                    <option value="TNT">TNT</option>
+                    <option value="Mondial Relay">Mondial Relay</option>
+                    <option value="Autre">Autre</option>
+                </select>
+            </div>
+            
+            <div class="form-groupe">
+                <label for="notes">Notes</label>
+                <textarea id="notes" name="notes" rows="3" class="input" placeholder="Informations complémentaires..."></textarea>
+            </div>
+            
+            <div class="bouton-formulaire">
+                <button type="submit" class="bouton-ok">Créer le colis</button>
+                <a href="{{ url_for('bon_livraison_detail', id=bl.id_bl) }}" class="bouton">Annuler</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

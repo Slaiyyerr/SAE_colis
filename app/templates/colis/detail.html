@@ -1,0 +1,169 @@
+{% extends "layout.html" %}
+
+{% block title %}Aperçu du colis{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="titre">Aperçu du colis</h1>
+    
+    <!-- BLOC DESTINATION -->
+    <div class="carte carte-colis-individuel">
+        <div class="titre-colis"> 
+            <h2 class="petit-titre contenu-espace">Colis № {{ colis.num_suivi_transporteur or 'Sans numéro' }} <strong>{% if departement %}{{ departement.nom_departement }}{% else %}Dpt. Inconnu{% endif %}</strong></h2>
+            <h2 class="sous-titre">Expédié par {{ colis.nom_transporteur or 'Transporteur inconnu' }}</h2>
+        </div>
+
+        <div class="contenu-espace" id="infos-colis-logo">
+            <img src="{{ url_for('static', filename='img/colis.png') }}" alt="Colis" class="colis-image">
+            
+            <h2 id="statut" class="{% if colis.statut_actuel == 'livre' %}ok{% elif colis.statut_actuel == 'probleme' %}probleme{% elif colis.statut_actuel == 'en_distribution' %}principal{% elif colis.statut_actuel == 'recu' %}waiting{% elif colis.statut_actuel == 'attendu' %}waiting{% endif %}">
+                {% if colis.statut_actuel == 'livre' %}
+                    Livré au département le {{ colis.date_livraison.strftime('%d/%m/%Y') if colis.date_livraison else '?' }}
+                {% elif colis.statut_actuel == 'probleme' %}
+                    Problème signalé
+                {% elif colis.statut_actuel == 'en_distribution' %}
+                    En cours de distribution
+                {% elif colis.statut_actuel == 'recu' %}
+                    Reçu le {{ colis.date_reception.strftime('%d/%m/%Y') if colis.date_reception else '-' }}, en attente de distribution
+                {% elif colis.statut_actuel == 'attendu' %}
+                    En attente de réception
+                {% else %}
+                    {{ colis.statut_actuel }}
+                {% endif %}
+            </h2>
+
+            <h2 class="petit-titre lieu-livraison">{% if departement %}{{ departement.lieu_livraison }}{% else %}Aucun lieu enregistré{% endif %}</h2>
+        </div>
+
+        <div class="contenu-espace">
+            <h2 class="texte">{% if demandeur %}Demandeur : {{ demandeur.prenom }} {{ demandeur.nom }}{% else %}Aucun demandeur identifié{% endif %}</h2>
+        </div>
+    </div>
+    
+    <!-- Informations détaillées -->
+    <div class="carte">
+        <h2 class="petit-titre">Informations relatives</h2>
+        <table class="tableau">
+            <tr>
+                <th>Numéro de suivi</th>
+                <td><strong>{{ colis.num_suivi_transporteur or '-' }}</strong></td>
+            </tr>
+            <tr>
+                <th>Commande №</th>
+                <td>
+                    {% if commande %}
+                    <a href="{{ url_for('commande_detail', id=commande.id_commande) }}">{{ commande.numero_bc }}</a>
+                    {% else %}<span class="destination-unknown-text">Non rattaché</span>{% endif %}
+                </td>
+            </tr>
+            <tr>
+                <th>Bon de livraison №</th>
+                <td>
+                    {% if bl %}
+                    <a href="{{ url_for('bon_livraison_detail', id=bl.id_bl) }}">{{ bl.num_bl_fournisseur or '#' ~ bl.id_bl }}</a>
+                    {% else %}-{% endif %}
+                </td>
+            </tr>
+            <tr>
+                <th>Lieu de stockage actuel</th>
+                <td>{{ colis.lieu_stockage or '-' }}</td>
+            </tr>
+            <tr>
+                <th>Notes importantes</th>
+                <td>{{ colis.notes or '-' }}</td>
+            </tr>
+        </table>
+    </div>
+    
+    <!-- Actions (responsable colis et admin uniquement) -->
+    {% if session.user.role in ['responsable_colis', 'admin'] %}
+        {% if colis.statut_actuel == 'attendu' %}
+        <h2 class="petit-titre sans-carte">Modifier l'état</h2>
+        <form method="POST" action="{{ url_for('colis_receptionner', id=colis.id_colis) }}" class="formulaire sans-carte">
+            <input type="text" name="lieu" value="Reprographie" class="input sans-carte">
+            <button type="submit" class="bouton sans-carte">Déclarer la réception</button>
+        </form>
+        {% endif %}
+        
+        {% if colis.statut_actuel == 'recu' %}
+        <h2 class="petit-titre sans-carte">Modifier l'état</h2>
+        <form method="POST" action="{{ url_for('colis_distribuer', id=colis.id_colis) }}" class="formulaire sans-carte">
+            <button type="submit" class="bouton sans-carte">Envoyer en distribution</button>
+        </form>
+        {% endif %}
+        
+        {% if colis.statut_actuel == 'en_distribution' %}
+        <h2 class="petit-titre sans-carte">Modifier l'état</h2>
+        <form method="POST" action="{{ url_for('colis_livrer', id=colis.id_colis) }}" class="formulaire">
+            <input type="text" name="lieu" placeholder="{{ departement.lieu_livraison if departement else 'Lieu de livraison' }}" 
+                   value="{{ departement.lieu_livraison if departement else '' }}"
+                   class="input sans-carte">
+            <button type="submit" class="bouton sans-carte">Marquer comme livré</button>
+        </form>
+        {% endif %}
+        
+        {% if colis.statut_actuel == 'probleme' %}
+        <div class="carte">
+            <h2 class="petit-titre">Résoudre le problème</h2>
+            <p class="texte">Ce colis a été signalé comme problématique. Choisissez une action pour le remettre dans le circuit :</p>
+            <form method="POST" action="{{ url_for('colis_resoudre', id=colis.id_colis) }}" class="formulaire">
+                <div class="form-groupe">
+                    <label for="nouveau_statut">Nouveau statut après résolution</label>
+                    <select name="nouveau_statut" id="nouveau_statut" class="input">
+                        <option value="recu">Reçu (à distribuer)</option>
+                        <option value="en_distribution">En distribution</option>
+                        <option value="attendu">En attente (retour fournisseur)</option>
+                    </select>
+                </div>
+                <div class="bouton-formulaire">
+                    <button type="submit" class="bouton correct">Résoudre et remettre en circuit</button>
+                </div>
+            </form>
+        </div>
+        {% endif %}
+        
+        {% if colis.statut_actuel not in ['livre', 'probleme'] %}
+        <form method="POST" action="{{ url_for('colis_probleme', id=colis.id_colis) }}" class="formulaire">
+            <h2 class="petit-titre sans-carte">Déclarer un problème</h2>
+            <input type="text" name="description" placeholder="Description du problème" required class="input sans-carte">
+            <button type="submit" class="bouton danger sans-carte">Signaler un problème</button>
+        </form>
+        {% endif %}
+    {% endif %}
+
+    <!-- Historique -->
+    <div class="carte">
+        <h3 class="petit-titre">Historique</h3>
+        {% if historique %}
+        <div class="tableau-container">
+            <table class="tableau">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Utilisateur</th>
+                        <th>Statut</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for h in historique %}
+                    <tr>
+                        <td>{{ h.date_heure.strftime('%d/%m/%Y %H:%M') if h.date_heure else '-' }}</td>
+                        <td>{{ h.utilisateur_complet }}</td>
+                        <td><strong>{% if h.ancien_statut and h.nouveau_statut %}{{ h.ancien_statut }} &rarr; {{ h.nouveau_statut }}{% else %}-{% endif %}</strong></td>
+                        <td>{{ h.action }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="message-vide">Aucune donnée enregistrée</p>
+        {% endif %}
+    </div>
+    
+    <div class="marge-haut">
+        <a href="{{ url_for('colis_list') }}" class="bouton bouton-formulaire">Retour</a>
+    </div>
+</div>
+{% endblock %}

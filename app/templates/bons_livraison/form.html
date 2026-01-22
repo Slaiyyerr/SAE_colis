@@ -1,0 +1,118 @@
+{% extends "layout.html" %}
+
+{% block title %}{% if bl %}Modifier{% else %}Nouveau{% endif %} bon de livraison{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="titre">{% if bl %}Modifier le bon de livraison{% else %}Nouveau bon de livraison{% endif %}</h1>
+    
+    <div class="carte">
+        <div class="auth-info">
+            <strong>Commande :</strong> {{ commande.numero_bc }}
+        </div>
+        
+        <form method="POST" enctype="multipart/form-data" class="formulaire">
+            <div class="form-groupe">
+                <label for="num_bl_fournisseur">Numéro BL fournisseur</label>
+                <input type="text" id="num_bl_fournisseur" name="num_bl_fournisseur" class="input"
+                       value="{{ bl.num_bl_fournisseur if bl else '' }}"
+                       placeholder="Ex: BL-12345">
+            </div>
+            
+            <div class="form-groupe">
+                <label for="date_bl">Date du BL</label>
+                <input type="date" id="date_bl" name="date_bl" class="input"
+                       value="{{ bl.date_bl.strftime('%Y-%m-%d') if bl and bl.date_bl else '' }}">
+            </div>
+            
+            <div class="form-groupe">
+                <label for="fichier_bl">Document BL (PDF ou image)</label>
+                <input type="file" id="fichier_bl" name="fichier_bl" class="input" accept=".pdf,.png,.jpg,.jpeg,.gif">
+                {% if bl and bl.fichier_bl_url %}
+                <p class="text-muted">
+                    📄 <a href="{{ bl.fichier_bl_url }}" target="_blank">Voir le fichier actuel</a>
+                </p>
+                {% endif %}
+            </div>
+            
+            {% if not bl %}
+            <h2 class="petit-titre">Colis associés</h2>
+            <p class="text-muted">Ajoutez les colis de cette livraison</p>
+            
+            <div id="colis-container">
+                <div class="colis-item flex">
+                    <div class="form-groupe">
+                        <label>N° de suivi transporteur</label>
+                        <input type="text" name="num_suivi_0" class="input" placeholder="Ex: 6A18987970674">
+                    </div>
+                    <div class="form-groupe">
+                        <label>Transporteur</label>
+                        <select name="transporteur_0" class="input">
+                            <option value="">-- Choisir --</option>
+                            <option value="Colissimo">Colissimo</option>
+                            <option value="Chronopost">Chronopost</option>
+                            <option value="La Poste">La Poste</option>
+                            <option value="DHL">DHL</option>
+                            <option value="UPS">UPS</option>
+                            <option value="FedEx">FedEx</option>
+                            <option value="GLS">GLS</option>
+                            <option value="TNT">TNT</option>
+                            <option value="Mondial Relay">Mondial Relay</option>
+                            <option value="Autre">Autre</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            <input type="hidden" id="nb_colis" name="nb_colis" value="1">
+            
+            <button type="button" class="bouton bouton-secondaire" onclick="ajouterColis()">
+                + Ajouter un colis
+            </button>
+            
+            <script>
+            let colisCount = 1;
+            function ajouterColis() {
+                const container = document.getElementById('colis-container');
+                const div = document.createElement('div');
+                div.className = 'colis-item flex';
+                div.innerHTML = `
+                    <div class="form-groupe">
+                        <input type="text" name="num_suivi_${colisCount}" class="input" placeholder="Ex: 6A18987970674">
+                    </div>
+                    <div class="form-groupe">
+                        <select name="transporteur_${colisCount}" class="input">
+                            <option value="">-- Choisir --</option>
+                            <option value="Colissimo">Colissimo</option>
+                            <option value="Chronopost">Chronopost</option>
+                            <option value="La Poste">La Poste</option>
+                            <option value="DHL">DHL</option>
+                            <option value="UPS">UPS</option>
+                            <option value="FedEx">FedEx</option>
+                            <option value="GLS">GLS</option>
+                            <option value="TNT">TNT</option>
+                            <option value="Mondial Relay">Mondial Relay</option>
+                            <option value="Autre">Autre</option>
+                        </select>
+                    </div>
+                    <button type="button" class="bouton danger" onclick="this.parentElement.remove()">X</button>
+                `;
+                container.appendChild(div);
+                colisCount++;
+                document.getElementById('nb_colis').value = colisCount;
+            }
+            </script>
+            {% endif %}
+            
+            <div class="bouton-formulaire">
+                <button type="submit" class="bouton-ok">
+                    {% if bl %}Enregistrer{% else %}Créer{% endif %}
+                </button>
+                <a href="{% if bl %}{{ url_for('bon_livraison_detail', id=bl.id_bl) }}{% else %}{{ url_for('commande_detail', id=commande.id_commande) }}{% endif %}" class="bouton">
+                    Annuler
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

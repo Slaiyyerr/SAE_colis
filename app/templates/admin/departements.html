@@ -1,0 +1,43 @@
+{% extends "layout.html" %}
+
+{% block title %}Gestion des departements{% endblock %}
+
+{% block content %}
+<div class="contenu-espace">
+        <h1 class="titre">Départements</h1>
+        <a href="{{ url_for('admin_departement_create') }}" class="bouton">+ Ajouter</a>
+    </div>
+    
+    <div class="carte">
+        <table class="tableau">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nom</th>
+                    <th>Lieu de livraison</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for dept in departements %}
+                <tr>
+                    <td>#{{ dept.id_departement }}</td>
+                    <td><strong>{{ dept.nom_departement }}</strong></td>
+                    <td>{{ dept.lieu_livraison or '-' }}</td>
+                    <td>
+                        <a href="{{ url_for('admin_departement_edit', id=dept.id_departement) }}" class="bouton">Modifier</a>
+                        <a href="{{ url_for('admin_departement_delete', id=dept.id_departement) }}" class="bouton">Supprimer</a>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="4" class="empty-state">Aucun département</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    
+   
+</div>
+{% endblock %}

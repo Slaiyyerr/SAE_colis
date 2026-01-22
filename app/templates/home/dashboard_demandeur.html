@@ -1,0 +1,149 @@
+{% extends 'layout.html' %}
+
+{% block title %}Mes colis - Tableau de bord{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="titre">Bienvenue, {{ session.user.prenom }}</h1>
+    <p class="sous-titre">Suivez vos colis et commandes en temps réel</p>
+
+    <!-- Statistiques personnelles -->
+    <div class="grille-stats">
+        <div class="stat-card">
+            <div class="number">{{ stats.total_commandes }}</div>
+            <div class="label">Mes commandes</div>
+        </div>
+        <div class="stat-card">
+            <div class="number">{{ stats.total_colis }}</div>
+            <div class="label">Mes colis</div>
+        </div>
+        <div class="stat-card">
+            <div class="number waiting">{{ stats.colis_en_attente }}</div>
+            <div class="label">En attente</div>
+        </div>
+        <div class="stat-card">
+            <div class="number ok">{{ stats.colis_livres }}</div>
+            <div class="label">Livrés</div>
+        </div>
+    </div>
+
+    <div class="grille-stats">
+        <!-- Mes colis en cours -->
+        <div class="carte">
+            <h2 class="petit-titre">Mes colis en cours</h2>
+            {% if stats.colis_en_cours %}
+            <div class="tableau-container">
+                <table class="tableau">
+                    <thead>
+                        <tr>
+                            <th>N° Suivi</th>
+                            <th>Statut</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for c in stats.colis_en_cours %}
+                        <tr>
+                            <td><strong>{{ c.num_suivi_transporteur or 'N/A' }}</strong></td>
+                            <td>
+                                {% if c.statut_actuel == 'attendu' %}
+                                <span class="waiting">En attente</span>
+                                {% elif c.statut_actuel == 'recu' %}
+                                <span class="principal">Reçu</span>
+                                {% elif c.statut_actuel == 'en_distribution' %}
+                                <span class="distribuer">En distribution</span>
+                                {% endif %}
+                            </td>
+                            <td><a href="{{ url_for('colis_detail', id=c.id_colis) }}" class="bouton bouton-actions">Voir</a></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p class="message-vide">Aucun colis en cours de traitement.</p>
+            {% endif %}
+            <a href="{{ url_for('colis_list') }}" class="lien">Voir tous mes colis →</a>
+        </div>
+
+        <!-- Mes commandes récentes -->
+        <div class="carte">
+            <h2 class="petit-titre">Mes commandes récentes</h2>
+            {% if stats.commandes_recentes %}
+            <div class="tableau-container">
+                <table class="tableau">
+                    <thead>
+                        <tr>
+                            <th>N° BC</th>
+                            <th>Statut</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for cmd in stats.commandes_recentes %}
+                        <tr>
+                            <td><strong>{{ cmd.numero_bc }}</strong></td>
+                            <td>
+                                {% if cmd.statut_global == 'en_attente' %}
+                                <span class="waiting">En attente</span>
+                                {% elif cmd.statut_global == 'validee' %}
+                                <span class="ok">Validée</span>
+                                {% elif cmd.statut_global == 'en_cours' %}
+                                <span class="principal">En cours</span>
+                                {% elif cmd.statut_global == 'recue' %}
+                                <span class="ok">Reçue</span>
+                                {% elif cmd.statut_global == 'non_validee' %}
+                                <span class="probleme">Refusée</span>
+                                {% endif %}
+                            </td>
+                            <td><a href="{{ url_for('commande_detail', id=cmd.id_commande) }}" class="bouton bouton-actions">Voir</a></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p class="message-vide">Aucune commande récente.</p>
+            {% endif %}
+            <a href="{{ url_for('commandes_list') }}" class="lien">Voir toutes mes commandes →</a>
+        </div>
+    </div>
+
+    <!-- Notifications récentes -->
+    <div class="carte">
+        <h2 class="petit-titre">Notifications récentes</h2>
+        {% if stats.notifications_recentes %}
+        <div class="tableau-container">
+            <table class="tableau">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Message</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for n in stats.notifications_recentes %}
+                    <tr>
+                        <td>{{ n.date_creation.strftime('%d/%m %H:%M') if n.date_creation else '-' }}</td>
+                        <td>
+                            <strong>{{ n.titre }}</strong><br>
+                            <span class="text-muted">{{ n.message[:50] }}{% if n.message|length > 50 %}...{% endif %}</span>
+                        </td>
+                        <td>
+                            {% if n.lien %}
+                            <a href="{{ n.lien }}" class="bouton bouton-actions">Voir</a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="message-vide">Aucune notification.</p>
+        {% endif %}
+        <a href="{{ url_for('notifications_list') }}" class="lien">Voir toutes les notifications →</a>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,103 @@
+{% extends 'layout.html' %}
+
+{% block title %}Reporting - Administration{% endblock %}
+
+{% block content %}
+<h1 class="titre">Reporting</h1>
+
+<!-- Menu admin -->
+
+
+<!-- Vue générale -->
+<div class="carte">
+    <h2 class="petit-titre">Vue générale</h2>
+    <div class="grille-stats">
+        <div class="stat-card">
+            <div class="number">{{ data.total_commandes }}</div>
+            <div class="label">Commandes totales</div>
+        </div>
+        <div class="stat-card">
+            <div class="number">{{ data.total_colis }}</div>
+            <div class="label">Colis totaux</div>
+        </div>
+        <div class="stat-card">
+            <div class="number">{{ data.colis_par_statut.livre }}</div>
+            <div class="label">Colis livrés</div>
+        </div>
+    </div>
+</div>
+
+<div class="formulaire">
+    <!-- Stats fournisseurs -->
+    <div class="carte">
+        <h2 class="petit-titre"> Statistiques fournisseurs</h2>
+        {% if stats_fournisseurs %}
+        <table class="tableau">
+            <thead>
+                <tr><th>Fournisseur</th><th>Commandes</th><th>En cours</th></tr>
+            </thead>
+            <tbody>
+                {% for s in stats_fournisseurs %}
+                <tr>
+                    <td>{{ s.nom_societe }}</td>
+                    <td>{{ s.nb_commandes }}</td>
+                    <td>{{ s.en_cours }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p>Aucune donnée.</p>
+        {% endif %}
+    </div>
+    
+    <!-- Stats départements -->
+    <div class="carte">
+        <h2 class="petit-titre"> Statistiques départements</h2>
+        {% if stats_departements %}
+        <table class="tableau">
+            <thead>
+                <tr><th>Département</th><th>Commandes</th></tr>
+            </thead>
+            <tbody>
+                {% for s in stats_departements %}
+                <tr>
+                    <td>{{ s.nom_departement }}</td>
+                    <td>{{ s.nb_commandes }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p>Aucune donnée.</p>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Colis par statut -->
+<div class="carte">
+    <h2 class="petit-titre">Répartition des colis</h2>
+    <div class="grille-stats">
+        <div class="stat-card">
+            <div class="number dashboard-secondary">{{ data.colis_par_statut.attendu }}</div>
+            <div class="label">Attendus</div>
+        </div>
+        <div class="stat-card">
+            <div class="number dashboard-primary">{{ data.colis_par_statut.recu }}</div>
+            <div class="label">Reçus</div>
+        </div>
+        <div class="stat-card">
+            <div class="number dashboard-warning">{{ data.colis_par_statut.en_distribution }}</div>
+            <div class="label">En distribution</div>
+        </div>
+        <div class="stat-card">
+            <div class="number dashboard-success">{{ data.colis_par_statut.livre }}</div>
+            <div class="label">Livrés</div>
+        </div>
+        <div class="stat-card">
+            <div class="number dashboard-problem">{{ data.colis_par_statut.probleme }}</div>
+            <div class="label">Problèmes</div>
+        </div>
+    </div>
+</div>
+{% endblock %}

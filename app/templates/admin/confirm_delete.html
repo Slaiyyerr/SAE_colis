@@ -1,0 +1,26 @@
+{% extends "layout.html" %}
+
+{% block title %}{{ titre }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="titre">⚠️ {{ titre }}</h1>
+    
+    <div class="carte">
+        <p class="texte">{{ message }}</p>
+        
+        {% if warning %}
+        <div class="alerte alerte-danger">
+            <strong>Attention :</strong> {{ warning }}
+        </div>
+        {% endif %}
+        
+        <div class="bouton-formulaire">
+            <form method="POST" class="formulaire-inline">
+                <button type="submit" class="bouton danger">Confirmer la suppression</button>
+            </form>
+            <a href="{{ cancel_url }}" class="bouton">Annuler</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

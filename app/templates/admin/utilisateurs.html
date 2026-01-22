@@ -1,0 +1,78 @@
+{% extends 'layout.html' %}
+
+{% block title %}Utilisateurs - Administration{% endblock %}
+
+{% block content %}
+
+
+<div class="contenu-espace">
+        <h1 class="titre">Utilisateurs</h1>
+        <a href="{{ url_for('admin_utilisateur_create') }}" class="bouton">+ Ajouter</a>
+    </div>
+    
+
+<!-- Menu admin -->
+
+
+<div class="carte">
+    <div class="auth-info">
+        <strong> Whitelist CAS</strong><br>
+        Seuls les utilisateurs présents dans cette liste peuvent accéder à l'application après authentification CAS.
+    </div>
+    
+    {% if utilisateurs %}
+    <table class="tableau">
+        <thead>
+            <tr>
+                <th>E-mail</th>
+                <th>Nom</th>
+                <th>Rôle</th>
+                <th>Département(s)</th>
+                <th>Statut</th>
+                <th>Gérer</th> 
+                
+            </tr>
+        </thead>
+        <tbody>
+            {% for u in utilisateurs %}
+            <tr>
+                <td>{{ u.email }}</td>
+                <td><strong>{{ u.prenom }} {{ u.nom }}</strong></td>
+                <td>
+                    {% if u.role == 'admin' %}
+                        Admin
+                    {% elif u.role == 'responsable_colis' %}
+                        Resp. colis
+                    {% elif u.role == 'editeur' %}
+                        Éditeur
+                    {% else %}
+                        Demandeur
+                    {% endif %}
+                </td>
+                <td>{{ u.id_departement or '-' }}</td>
+                
+                <td class="actions-utilisateur">
+                    <div>
+                        <form action="{{ url_for('admin_utilisateur_toggle', id=u.id_utilisateur) }}" method="POST" class="formulaire-inline">
+                       {% if u.est_actif %}
+                            <button type="submit" class="bouton bouton-actions correct" title="Désactiver">Actif</button>
+                            {% else %}
+                            <button type="submit" class="bouton bouton-actions danger" title="Activer">Inactif</button>
+                            {% endif %}
+                            </form>
+                </td>
+                <td>
+                    <a href="{{ url_for('admin_utilisateur_edit', id=u.id_utilisateur) }}" class="bouton bouton-actions">Modifier</a>
+                </td>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>Aucun utilisateur.</p>
+    {% endif %}
+</div>
+{% endblock %}

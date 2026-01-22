@@ -1,0 +1,152 @@
+{% extends 'layout.html' %}
+
+{% block title %}Gestion des commandes - Tableau de bord{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="titre">Tableau de bord Editeur</h1>
+    <p class="sous-titre">Gestion des bons de commande et fournisseurs</p>
+
+    <!-- Statistiques commandes -->
+    <div class="grille-stats">
+        <div class="stat-card">
+            <div class="number">{{ stats.total_commandes }}</div>
+            <div class="label">Total commandes</div>
+        </div>
+        <div class="stat-card">
+            <div class="number waiting">{{ stats.commandes_en_attente }}</div>
+            <div class="label">A valider</div>
+        </div>
+        <div class="stat-card">
+            <div class="number ok">{{ stats.commandes_validees }}</div>
+            <div class="label">Validees</div>
+        </div>
+        <div class="stat-card">
+            <div class="number probleme">{{ stats.commandes_non_validees }}</div>
+            <div class="label">Refusees</div>
+        </div>
+        <div class="stat-card">
+            <div class="number">{{ stats.total_fournisseurs }}</div>
+            <div class="label">Fournisseurs</div>
+        </div>
+    </div>
+
+    <div class="grille-stats">
+        <!-- Commandes a traiter -->
+        <div class="carte">
+            <h2 class="petit-titre">Commandes a valider</h2>
+            {% if stats.commandes_a_valider %}
+            <div class="tableau-container">
+                <table class="tableau">
+                    <thead>
+                        <tr>
+                            <th>N BC</th>
+                            <th>Fournisseur</th>
+                            <th>Departement</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for cmd in stats.commandes_a_valider %}
+                        <tr>
+                            <td><strong>{{ cmd.numero_bc }}</strong></td>
+                            <td>{{ cmd.fournisseur_nom or '-' }}</td>
+                            <td>{{ cmd.departement_nom or '-' }}</td>
+                            <td><a href="{{ url_for('commande_edit', id=cmd.id_commande) }}" class="bouton bouton-actions">Traiter</a></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p class="message-vide">Toutes les commandes sont validees.</p>
+            {% endif %}
+            <a href="{{ url_for('commandes_list') }}?statut=en_attente" class="lien">Voir toutes les commandes en attente</a>
+        </div>
+
+        <!-- Stats par fournisseur -->
+        <div class="carte">
+            <h2 class="petit-titre">Commandes par fournisseur</h2>
+            {% if stats.stats_fournisseurs %}
+            <div class="tableau-container">
+                <table class="tableau">
+                    <thead>
+                        <tr>
+                            <th>Fournisseur</th>
+                            <th>Commandes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for f in stats.stats_fournisseurs %}
+                        <tr>
+                            <td>{{ f.nom_societe }}</td>
+                            <td><strong>{{ f.nb_commandes }}</strong></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p class="message-vide">Aucune statistique disponible.</p>
+            {% endif %}
+            <a href="{{ url_for('fournisseurs_list') }}" class="lien">Gerer les fournisseurs</a>
+        </div>
+    </div>
+
+    <!-- Actions rapides -->
+    <div class="carte" id="actions_rapide">
+        <h2 class="petit-titre">Actions rapides</h2>
+        <div class="flex">
+            <a href="{{ url_for('commande_create') }}" class="bouton bouton-ok">+ Nouvelle commande</a>
+            <a href="{{ url_for('commandes_list') }}" class="bouton">Toutes les commandes</a>
+            <a href="{{ url_for('fournisseur_create') }}" class="bouton">+ Nouveau fournisseur</a>
+            <a href="{{ url_for('fournisseurs_list') }}" class="bouton">Liste fournisseurs</a>
+        </div>
+    </div>
+
+    <!-- Commandes recentes -->
+    <div class="carte" id="activite_recente">
+        <h2 class="petit-titre">Dernieres commandes creees</h2>
+        {% if stats.commandes_recentes %}
+        <div class="tableau-container">
+            <table class="tableau">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>N BC</th>
+                        <th>Fournisseur</th>
+                        <th>Statut</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for cmd in stats.commandes_recentes %}
+                    <tr>
+                        <td>{{ cmd.date_creation.strftime('%d/%m/%Y') if cmd.date_creation else '-' }}</td>
+                        <td><strong>{{ cmd.numero_bc }}</strong></td>
+                        <td>{{ cmd.fournisseur_nom or '-' }}</td>
+                        <td>
+                            {% if cmd.statut_global == 'en_attente' %}
+                            <span class="waiting">En attente</span>
+                            {% elif cmd.statut_global == 'validee' %}
+                            <span class="ok">Validee</span>
+                            {% elif cmd.statut_global == 'non_validee' %}
+                            <span class="probleme">Refusee</span>
+                            {% elif cmd.statut_global == 'en_cours' %}
+                            <span class="principal">En cours</span>
+                            {% elif cmd.statut_global == 'recue' %}
+                            <span class="ok">Recue</span>
+                            {% endif %}
+                        </td>
+                        <td><a href="{{ url_for('commande_detail', id=cmd.id_commande) }}" class="bouton bouton-actions">Voir</a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="message-vide">Aucune commande recente.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

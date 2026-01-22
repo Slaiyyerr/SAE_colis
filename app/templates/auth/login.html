@@ -1,0 +1,43 @@
+{% extends 'layout.html' %}
+
+{% block title %}Connexion - Suivi Colis{% endblock %}
+
+{% block content %}
+
+    <div class="auth-card">
+        <div class="form-groupe">
+            
+       
+            
+        
+        
+        <h1 class="titre">Connexion</h1>
+        <p class="sous-titre">Continuer vers Suivi Colis </p>
+        
+        
+        <form class ="formulaire auth" action="{{ url_for('login') }}" method="POST">
+            <div class="form-groupe">
+                <label class="texte" for="email">E-mail</label>
+                <input class="input" type="email" id="email" name="email" placeholder="votre.email@iutv.univ-paris13.fr" required>
+            </div>
+            <div class="form-groupe">
+                <label class="texte" for="password">Mot de passe</label>
+                <input class="input" type="password" id="password" name="password" placeholder="********" required>
+            </div>
+            <button type="submit" class="bouton">Se connecter</button>
+        </form>
+        
+        <div class="auth-info">
+            <strong>Comptes de test :</strong>
+            <ul class="auth-accounts">
+                <li><code>admin@iutv.univ-paris13.fr</code> - Admin</li>
+                <li><code>reprographie@iutv.univ-paris13.fr</code> - Responsable colis</li>
+                <li><code>compta@iutv.univ-paris13.fr</code> - Éditeur</li>
+                <li><code>p.durand@iutv.univ-paris13.fr</code> - Demandeur</li>
+            </ul>
+            <p class="auth-password">Mot de passe : <code>password</code></p>
+        </div>
+        </div>
+    </div>
+
+{% endblock %}

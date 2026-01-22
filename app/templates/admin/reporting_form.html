@@ -1,0 +1,37 @@
+{% extends 'layout.html' %}
+
+{% block title %}Création d'un rapport - Administration{% endblock %}
+
+{% block content %}
+ <h1 class="titre">Création d'un rapport</h1>
+
+
+  <div class="carte">
+
+        <form class ="formulaire"method="POST">
+            <label>
+                <input type="radio" name="departement" id="departement">
+                Rapport de département
+            </label>
+            <label>
+                <input type="radio" name="fournisseur" id="fournisseur">
+                Rapport de fournisseur
+            </label>
+       
+      
+            <div class="form-groupe">
+                <label for="email">E-mail <span>*</span></label>
+                <input class="input" type="email" id="email" name="email" value="{{ utilisateur.email if utilisateur else '' }}" required>
+            </div>
+            
+            <div class="form-groupe">
+                <label for="mot_de_passe">Mot de passe <span>*</span> {% if utilisateur %}<span id="laisser-vide">Laissez le champ vide si vous ne souhaitez pas effectuer de modification</span>{% else %} <span id="laisser-vide">Par défaut "password" </span> {% endif %}</label>
+                <input class="input" type="password" id="mot_de_passe" name="mot_de_passe" placeholder="{% if utilisateur %}Nouveau mot de passe{% else %}password{% endif %}">
+            </div>
+
+        </form>
+
+                <button type="submit" class="bouton-ok">Enregistrer</button>
+                <a href="{{ url_for('admin_reporting') }}" class="bouton">Annuler</a>
+    </div>        
+{% endblock %}

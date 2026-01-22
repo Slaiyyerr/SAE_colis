@@ -1,0 +1,73 @@
+{% extends 'layout.html' %}
+
+{% block title %}Bons de commande{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="contenu-espace">
+        <h1 class="titre">Bons de commande</h1>
+        {% if session.user.role in ['editeur', 'admin'] %}
+        <a href="{{ url_for('commande_create') }}" class="bouton">+ Nouvelle commande</a>
+        {% endif %}
+    </div>
+
+    <span class="flex">Filtres :
+        <a href="{{ url_for('commandes_list') }}" class="bouton bouton-secondaire {% if not request.args.get('statut') %}bouton-actif{% endif %}">Tous</a>
+        <a href="{{ url_for('commandes_list', statut='en_attente') }}" class="bouton bouton-secondaire {% if request.args.get('statut') == 'en_attente' %}bouton-actif{% endif %}">En attente</a>
+        <a href="{{ url_for('commandes_list', statut='validee') }}" class="bouton bouton-secondaire {% if request.args.get('statut') == 'validee' %}bouton-actif{% endif %}">Validées</a>
+        <a href="{{ url_for('commandes_list', statut='en_cours') }}" class="bouton bouton-secondaire {% if request.args.get('statut') == 'en_cours' %}bouton-actif{% endif %}">En cours</a>
+        <a href="{{ url_for('commandes_list', statut='recue') }}" class="bouton bouton-secondaire {% if request.args.get('statut') == 'recue' %}bouton-actif{% endif %}">Reçues</a>
+    </span>
+
+    <div class="carte">
+        {% if commandes %}
+        <div class="tableau-container">
+            <table class="tableau">
+                <thead>
+                    <tr>
+                        <th>N° BC</th>
+                        <th>Fournisseur</th>
+                        <th>Département</th>
+                        <th>Date création</th>
+                        <th>Livraison prévue</th>
+                        <th id="statut">Statut</th>
+                        <th id="gerer">Gérer</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for cmd in commandes %}
+                    <tr>
+                        <td><strong>{{ cmd.numero_bc }}</strong></td>
+                        <td>{{ cmd.fournisseur_nom if cmd.fournisseur_nom else '-' }}</td>
+                        <td>{{ cmd.departement_nom if cmd.departement_nom else '-' }}</td>
+                        <td>{{ cmd.date_creation.strftime('%d/%m/%Y') if cmd.date_creation else '-' }}</td>
+                        <td>{{ cmd.date_livraison_prevue.strftime('%d/%m/%Y') if cmd.date_livraison_prevue else '-' }}</td>
+                        <td id="statut">
+                            {% if cmd.statut_global == 'en_attente' %}
+                                <span class="waiting">En attente</span>
+                            {% elif cmd.statut_global == 'validee' %}
+                                <span class="ok">Validée</span>
+                            {% elif cmd.statut_global == 'en_cours' %}
+                                <span class="principal">En cours</span>
+                            {% elif cmd.statut_global == 'recue' %}
+                                <span class="ok">Reçue</span>
+                            {% elif cmd.statut_global == 'annulee' %}
+                                <span class="probleme">Annulée</span>
+                            {% else %}
+                                {{ cmd.statut_global }}
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{{ url_for('commande_detail', id=cmd.id_commande) }}" class="bouton bouton-actions">Voir</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="message-vide">Aucune commande trouvée.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

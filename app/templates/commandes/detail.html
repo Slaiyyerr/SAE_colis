@@ -1,0 +1,145 @@
+{% extends "layout.html" %}
+
+{% block title %}Commande {{ commande.numero_bc }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="titre">Commande {{ commande.numero_bc }}</h1>
+    
+    <div class="carte">
+        <h2 class="petit-titre">Informations générales</h2>
+        <table class="tableau">
+            <tr>
+                <th>Numéro BC</th>
+                <td><strong>{{ commande.numero_bc }}</strong></td>
+            </tr>
+            <tr>
+                <th>Statut</th>
+                <td>
+                    {% if commande.statut_global == 'en_attente' %}
+                        <span class="waiting">En attente</span>
+                    {% elif commande.statut_global == 'validee' %}
+                        <span class="ok">Validée</span>
+                    {% elif commande.statut_global == 'en_cours' %}
+                        <span class="principal">En cours</span>
+                    {% elif commande.statut_global == 'recue' %}
+                        <span class="ok">Reçue</span>
+                    {% elif commande.statut_global == 'annulee' %}
+                        <span class="probleme">Annulée</span>
+                    {% else %}
+                        {{ commande.statut_global }}
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <th>Date création</th>
+                <td>{{ commande.date_creation.strftime('%d/%m/%Y') if commande.date_creation else '-' }}</td>
+            </tr>
+            <tr>
+                <th>Livraison prévue</th>
+                <td>{{ commande.date_livraison_prevue.strftime('%d/%m/%Y') if commande.date_livraison_prevue else '-' }}</td>
+            </tr>
+            <tr>
+                <th>Bon de commande</th>
+                <td>
+                    {% if commande.fichier_bc_url %}
+                    <a href="{{ commande.fichier_bc_url }}" target="_blank" class="bouton">
+                        📄 Voir le document
+                    </a>
+                    {% else %}
+                    <span class="text-muted">Aucun fichier</span>
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <th>Notes</th>
+                <td>{{ commande.notes or '-' }}</td>
+            </tr>
+        </table>
+    </div>
+    
+    <div class="carte">
+        <h2 class="petit-titre">Articles commandés ({{ lignes|length }})</h2>
+        {% if lignes %}
+        <div class="tableau-container">
+            <table class="tableau">
+                <thead>
+                    <tr>
+                        <th>Référence</th>
+                        <th>Désignation</th>
+                        <th>Quantité</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for ligne in lignes %}
+                    <tr>
+                        <td>{{ ligne.ref_produit or '-' }}</td>
+                        <td>{{ ligne.designation }}</td>
+                        <td>{{ ligne.quantite }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="message-vide">Aucun article</p>
+        {% endif %}
+    </div>
+    
+    <div class="carte">
+        <div class="contenu-espace">
+            <h2 class="petit-titre">Bons de livraison ({{ bons_livraison|length }})</h2>
+            {% if session.user.role in ['responsable_colis', 'admin'] %}
+            <a href="{{ url_for('bon_livraison_create', id_commande=commande.id_commande) }}" class="bouton">
+                + Ajouter un BL
+            </a>
+            {% endif %}
+        </div>
+        
+        {% if bons_livraison %}
+        <div class="tableau-container">
+            <table class="tableau">
+                <thead>
+                    <tr>
+                        <th>N° BL Fournisseur</th>
+                        <th>Date BL</th>
+                        <th>Réception</th>
+                        <th>Document</th>
+                        <th id="gerer">Gérer</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for bl in bons_livraison %}
+                    <tr>
+                        <td><strong>{{ bl.num_bl_fournisseur or '-' }}</strong></td>
+                        <td>{{ bl.date_bl.strftime('%d/%m/%Y') if bl.date_bl else '-' }}</td>
+                        <td>{{ bl.date_reception.strftime('%d/%m/%Y %H:%M') if bl.date_reception else '-' }}</td>
+                        <td>
+                            {% if bl.fichier_bl %}
+                            <a href="/uploads/{{ bl.fichier_bl }}" target="_blank" class="bouton bouton-secondaire">📄 Voir</a>
+                            {% else %}-{% endif %}
+                        </td>
+                        <td>
+                            <a href="{{ url_for('bon_livraison_detail', id=bl.id_bl) }}" class="bouton bouton-actions">Détails</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="message-vide">Aucun bon de livraison</p>
+        {% endif %}
+    </div>
+    
+    <div class="flex">
+        <a href="{{ url_for('commandes_list') }}" class="bouton">Retour</a>
+        {% if session.user.role in ['editeur', 'admin'] %}
+        <a href="{{ url_for('commande_edit', id=commande.id_commande) }}" class="bouton">Modifier</a>
+        {% endif %}
+        {% if session.user.role == 'admin' %}
+        <a href="{{ url_for('commande_delete', id=commande.id_commande) }}" class="bouton danger">Supprimer</a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

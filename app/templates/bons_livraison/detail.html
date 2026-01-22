@@ -1,0 +1,109 @@
+{% extends "layout.html" %}
+
+{% block title %}Bon de livraison {{ bl.num_bl_fournisseur or bl.id_bl }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="titre">Bon de livraison {{ bl.num_bl_fournisseur or '#' ~ bl.id_bl }}</h1>
+    
+    <div class="carte">
+        <h2 class="petit-titre">Informations</h2>
+        <table class="tableau">
+            <tr>
+                <th>Commande</th>
+                <td>
+                    <a href="{{ url_for('commande_detail', id=commande.id_commande) }}" class="lien">{{ commande.numero_bc }}</a>
+                </td>
+            </tr>
+            <tr>
+                <th>N° BL fournisseur</th>
+                <td><strong>{{ bl.num_bl_fournisseur or '-' }}</strong></td>
+            </tr>
+            <tr>
+                <th>Date BL</th>
+                <td>{{ bl.date_bl.strftime('%d/%m/%Y') if bl.date_bl else '-' }}</td>
+            </tr>
+            <tr>
+                <th>Date réception</th>
+                <td>{{ bl.date_reception.strftime('%d/%m/%Y %H:%M') if bl.date_reception else '-' }}</td>
+            </tr>
+            <tr>
+                <th>Document BL</th>
+                <td>
+                    {% if bl.fichier_bl_url %}
+                    <a href="{{ bl.fichier_bl_url }}" target="_blank" class="bouton bouton-secondaire">
+                        📄 Voir le document
+                    </a>
+                    {% else %}
+                    <span class="text-muted">Aucun fichier</span>
+                    {% endif %}
+                </td>
+            </tr>
+        </table>
+    </div>
+    
+    <div class="carte">
+        <div class="contenu-espace">
+            <h2 class="petit-titre">Colis associés ({{ colis_list|length }})</h2>
+            {% if session.user.role in ['responsable_colis', 'admin'] %}
+            <a href="{{ url_for('colis_create', id_bl=bl.id_bl) }}" class="bouton">
+                + Ajouter un colis
+            </a>
+            {% endif %}
+        </div>
+        
+        {% if colis_list %}
+        <div class="tableau-container">
+            <table class="tableau">
+                <thead>
+                    <tr>
+                        <th>N° suivi</th>
+                        <th>Transporteur</th>
+                        <th id="statut">Statut</th>
+                        <th id="gerer">Gérer</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for colis in colis_list %}
+                    <tr>
+                        <td><strong>{{ colis.num_suivi_transporteur or '-' }}</strong></td>
+                        <td>{{ colis.nom_transporteur or '-' }}</td>
+                        <td id="statut">
+                            {% if colis.statut_actuel == 'attendu' %}
+                                <span class="principal">Attendu</span>
+                            {% elif colis.statut_actuel == 'recu' %}
+                                <span class="waiting">À distribuer</span>
+                            {% elif colis.statut_actuel == 'en_distribution' %}
+                                <span class="principal">En distribution</span>
+                            {% elif colis.statut_actuel == 'livre' %}
+                                <span class="ok">Livré</span>
+                            {% elif colis.statut_actuel == 'probleme' %}
+                                <span class="probleme">Problème</span>
+                            {% else %}
+                                {{ colis.statut_actuel }}
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{{ url_for('colis_detail', id=colis.id_colis) }}" class="bouton bouton-actions">Détails</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="message-vide">Aucun colis</p>
+        {% endif %}
+    </div>
+    
+    <div class="flex">
+        <a href="{{ url_for('commande_detail', id=commande.id_commande) }}" class="bouton">Retour commande</a>
+        {% if session.user.role in ['responsable_colis', 'admin'] %}
+        <a href="{{ url_for('bon_livraison_edit', id=bl.id_bl) }}" class="bouton">Modifier</a>
+        {% endif %}
+        {% if session.user.role == 'admin' %}
+        <a href="{{ url_for('bon_livraison_delete', id=bl.id_bl) }}" class="bouton danger">Supprimer</a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

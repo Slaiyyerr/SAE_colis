@@ -1,0 +1,48 @@
+{% extends "layout.html" %}
+
+{% block title %}Notifications{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="contenu-espace">
+        <h1 class="titre">Notifications</h1>
+        {% if notifications %}
+        <form method="POST" action="{{ url_for('notifications_tout_lire') }}">
+            <button type="submit" class="bouton">Tout marquer comme lu</button>
+        </form>
+        {% endif %}
+    </div>
+    
+    {% if notifications %}
+        {% for notif in notifications %}
+        <div class="carte {% if not notif.est_lue %}carte-non-lue{% endif %}">
+            <div class="contenu-espace">
+                <div>
+                    <h2 class="petit-titre">
+                        {% if not notif.est_lue %}● {% endif %}{{ notif.titre }}
+                    </h2>
+                    <p class="sous-titre">
+                        {{ notif.date_creation.strftime('%d/%m/%Y %H:%M') if notif.date_creation else '' }}
+                    </p>
+                    <p class="texte">{{ notif.message }}</p>
+                </div>
+                <div class="flex">
+                    {% if notif.lien %}
+                    <a href="{{ notif.lien }}" class="bouton">Voir</a>
+                    {% endif %}
+                    {% if not notif.est_lue %}
+                    <form method="POST" action="{{ url_for('notification_lire', id=notif.id_notification) }}" class="formulaire-inline">
+                        <button type="submit" class="bouton bouton-secondaire">Marquer comme lu</button>
+                    </form>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+    <div class="carte">
+        <p class="message-vide">🔔 Aucune notification</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

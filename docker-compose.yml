@@ -1,0 +1,67 @@
+# =============================================================================
+# Docker Compose pour l'application Suivi Colis
+# =============================================================================
+#
+# Usage :
+#   docker-compose up              # Demarre l'app + MySQL
+#   docker-compose up --build      # Rebuild l'image avant de demarrer
+#   docker-compose down            # Arrete les containers
+#   docker-compose down -v         # Arrete et supprime les volumes (reset DB)
+#
+# L'application sera accessible sur http://localhost:8000
+# =============================================================================
+
+services:
+  # ---------------------------------------------------------------------------
+  # Application Flask
+  # ---------------------------------------------------------------------------
+  web:
+    build: .
+    ports:
+      - "8000:8000"           # Port expose sur l'hote
+    environment:
+      - FLASK_ENV=development
+      - SECRET_KEY=dev-secret-key-change-in-production
+      - DB_HOST=db            # Nom du service MySQL
+      - DB_PORT=3306
+      - DB_NAME=suivi_colis
+      - DB_USER=root
+      - DB_PASSWORD=root
+      - CAS_DEV_MODE=true     # Mode dev : connexion sans CAS
+      - CAS_SERVER=https://cas.univ-paris13.fr/cas
+      - APP_URL=http://localhost:8000
+      - PORT=8000
+    volumes:
+      - .:/app                # Hot reload du code
+      - uploads:/app/app/uploads  # Persistance des fichiers uploades
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # ---------------------------------------------------------------------------
+  # Base de donnees MySQL 8.0
+  # ---------------------------------------------------------------------------
+  db:
+    image: mysql:8.0
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=suivi_colis
+    ports:
+      - "3307:3306"           # Port 3307 sur l'hote pour eviter conflit
+    volumes:
+      - mysql_data:/var/lib/mysql                    # Persistance des donnees
+      - ./app/database/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql        # Init schema
+      - ./app/database/donnees_de_test.sql:/docker-entrypoint-initdb.d/02-data.sql # Init donnees
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+# Volumes nommes pour la persistance
+volumes:
+  mysql_data:     # Donnees MySQL
+  uploads:        # Fichiers uploades (BC, BL)

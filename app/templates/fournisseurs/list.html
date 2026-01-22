@@ -1,0 +1,54 @@
+{% extends 'layout.html' %}
+
+{% block title %}Fournisseurs{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="contenu-espace">
+        <h1 class="titre">Fournisseurs</h1>
+        {% if session.user.role in ['editeur', 'admin'] %}
+        <a href="{{ url_for('fournisseur_create') }}" class="bouton">+ Nouveau fournisseur</a>
+        {% endif %}
+    </div>
+
+    <div class="carte">
+        {% if fournisseurs %}
+        <div class="tableau-container">
+            <table class="tableau">
+                <thead>
+                    <tr>
+                        <th>Société</th>
+                        <th>Contact</th>
+                        <th>Téléphone</th>
+                        <th>Email</th>
+                        <th id="gerer">Gérer</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for f in fournisseurs %}
+                    <tr>
+                        <td><strong>{{ f.nom_societe }}</strong></td>
+                        <td>{{ f.contact_nom or '-' }}</td>
+                        <td>{{ f.telephone or '-' }}</td>
+                        <td>
+                            {% if f.email %}
+                            <a href="mailto:{{ f.email }}" class="lien">{{ f.email }}</a>
+                            {% else %}-{% endif %}
+                        </td>
+                        <td>
+                            <a href="{{ url_for('fournisseur_detail', id=f.id_fournisseur) }}" class="bouton bouton-actions">Voir</a>
+                            {% if session.user.role in ['editeur', 'admin'] %}
+                            <a href="{{ url_for('fournisseur_edit', id=f.id_fournisseur) }}" class="bouton bouton-actions">Modifier</a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="message-vide">Aucun fournisseur enregistré.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

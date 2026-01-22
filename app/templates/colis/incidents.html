@@ -1,0 +1,69 @@
+{% extends 'layout.html' %}
+
+{% block title %}Gestion des incidents{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="titre">Gestion des incidents</h1>
+    
+    <p class="texte">Liste des colis signalés comme problématiques nécessitant une attention particulière.</p>
+    
+    <div class="carte">
+        {% if colis_problemes %}
+        <div class="tableau-container">
+            <table class="tableau">
+                <thead>
+                    <tr>
+                        <th>N° Suivi</th>
+                        <th>Transporteur</th>
+                        <th>Département</th>
+                        <th>Demandeur</th>
+                        <th>Date réception</th>
+                        <th>Notes</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for c in colis_problemes %}
+                    <tr>
+                        <td><strong>{{ c.num_suivi_transporteur or 'N/A' }}</strong></td>
+                        <td>{{ c.nom_transporteur or '-' }}</td>
+                        <td>
+                            {% if c.destination %}
+                            {{ c.destination.departement }}
+                            {% else %}
+                            <span class="probleme">Non identifié</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if c.destination and c.destination.demandeur %}
+                            {{ c.destination.demandeur }}
+                            {% else %}
+                            -
+                            {% endif %}
+                        </td>
+                        <td>{{ c.date_reception.strftime('%d/%m/%Y') if c.date_reception else '-' }}</td>
+                        <td>{{ c.notes or '-' }}</td>
+                        <td>
+                            <a href="{{ url_for('colis_detail', id=c.id_colis) }}" class="bouton bouton-actions">Gérer</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="message-vide">✅ Aucun incident en cours. Tous les colis sont en bon état.</p>
+        {% endif %}
+    </div>
+    
+    <div class="carte">
+        <h2 class="petit-titre">Actions rapides</h2>
+        <div class="flex">
+            <a href="{{ url_for('colis_list') }}" class="bouton">Voir tous les colis</a>
+            <a href="{{ url_for('colis_a_distribuer') }}" class="bouton">À distribuer</a>
+            <a href="{{ url_for('colis_en_attente') }}" class="bouton">En attente</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

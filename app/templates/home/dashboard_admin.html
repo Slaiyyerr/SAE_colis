@@ -1,0 +1,154 @@
+{% extends 'layout.html' %}
+
+{% block title %}Administration - Tableau de bord{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="titre">Tableau de bord Administrateur</h1>
+    <p class="sous-titre">Vue d'ensemble du systeme</p>
+
+    <!-- Statistiques globales -->
+    <div class="grille-stats">
+        <div class="stat-card">
+            <div class="number">{{ stats.total_commandes }}</div>
+            <div class="label">Commandes</div>
+        </div>
+        <div class="stat-card">
+            <div class="number">{{ stats.total_colis }}</div>
+            <div class="label">Colis</div>
+        </div>
+        <div class="stat-card">
+            <div class="number waiting">{{ stats.colis_en_attente }}</div>
+            <div class="label">En attente</div>
+        </div>
+        <div class="stat-card">
+            <div class="number distribuer">{{ stats.colis_a_distribuer }}</div>
+            <div class="label">A distribuer</div>
+        </div>
+        <div class="stat-card">
+            <div class="number probleme">{{ stats.colis_probleme }}</div>
+            <div class="label">Incidents</div>
+        </div>
+    </div>
+
+    <div class="grille-stats">
+        <!-- Stats par departement -->
+        <div class="carte">
+            <h2 class="petit-titre">Colis par departement</h2>
+            {% if stats.stats_departements %}
+            <div class="tableau-container">
+                <table class="tableau">
+                    <thead>
+                        <tr>
+                            <th>Departement</th>
+                            <th>Colis</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for d in stats.stats_departements %}
+                        <tr>
+                            <td>{{ d.nom_departement }}</td>
+                            <td><strong>{{ d['nb_colis']|default(0) }}</strong></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p class="message-vide">Aucune statistique disponible.</p>
+            {% endif %}
+            <a href="{{ url_for('admin_reporting') }}" class="lien">Voir les rapports detailles</a>
+        </div>
+
+        <!-- Stats par fournisseur -->
+        <div class="carte">
+            <h2 class="petit-titre">Commandes par fournisseur</h2>
+            {% if stats.stats_fournisseurs %}
+            <div class="tableau-container">
+                <table class="tableau">
+                    <thead>
+                        <tr>
+                            <th>Fournisseur</th>
+                            <th>Commandes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for f in stats.stats_fournisseurs %}
+                        <tr>
+                            <td>{{ f.nom_societe }}</td>
+                            <td><strong>{{ f.nb_commandes }}</strong></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p class="message-vide">Aucune statistique disponible.</p>
+            {% endif %}
+            <a href="{{ url_for('fournisseurs_list') }}" class="lien">Gerer les fournisseurs</a>
+        </div>
+    </div>
+
+    <!-- Gestion du systeme -->
+    <div class="grille-stats">
+        <div class="carte">
+            <h2 class="petit-titre">Utilisateurs</h2>
+            <div class="stat-card">
+                <div class="number">{{ stats.total_utilisateurs }}</div>
+                <div class="label">Utilisateurs actifs</div>
+            </div>
+            <a href="{{ url_for('admin_utilisateurs') }}" class="lien">Gerer les utilisateurs</a>
+        </div>
+
+        <div class="carte">
+            <h2 class="petit-titre">Referentiels</h2>
+            <div class="stat-card">
+                <div class="number">{{ stats.total_departements }}</div>
+                <div class="label">Departements</div>
+            </div>
+            <a href="{{ url_for('admin_departements') }}" class="lien">Gerer les departements</a>
+        </div>
+    </div>
+
+    <!-- Actions rapides admin -->
+    <div class="carte" id="actions_rapide">
+        <h2 class="petit-titre">Administration</h2>
+        <div class="flex">
+            <a href="{{ url_for('admin_utilisateur_create') }}" class="bouton bouton-ok">+ Nouvel utilisateur</a>
+            <a href="{{ url_for('admin_departement_create') }}" class="bouton">+ Nouveau departement</a>
+            <a href="{{ url_for('admin_reporting') }}" class="bouton">Rapports</a>
+            <a href="{{ url_for('colis_list') }}" class="bouton">Tous les colis</a>
+            <a href="{{ url_for('commandes_list') }}" class="bouton">Toutes les commandes</a>
+        </div>
+    </div>
+
+    <!-- Activite recente -->
+    <div class="carte" id="activite_recente">
+        <h2 class="petit-titre">Activite recente du systeme</h2>
+        {% if stats.activite_recente %}
+        <div class="tableau-container">
+            <table class="tableau">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Action</th>
+                        <th>Statut</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for h in stats.activite_recente %}
+                    <tr>
+                        <td>{{ h.date_heure.strftime('%d/%m %H:%M') if h.date_heure else '-' }}</td>
+                        <td>{{ h.action }}</td>
+                        <td>{{ h.ancien_statut or '' }} -> {{ h.nouveau_statut or '' }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="message-vide">Aucune activite recente.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

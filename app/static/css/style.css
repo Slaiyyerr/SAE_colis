@@ -1,0 +1,1166 @@
+/* ===========================================
+   Suivi Colis - CSS Simplifié et Optimisé
+   =========================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+/* ===========================================
+   LOGO (5 lignes)
+   =========================================== */
+.logo {
+    height: 4em;
+    width: 4em;
+}
+
+/* ===========================================
+   PROFILE AVATAR (8 lignes)
+   =========================================== */
+.profile-avatar {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.navbar-user {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* ===========================================
+   RESET ET VARIABLES
+   =========================================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Logo en haut à droite */
+.main-content > .logo-header {
+    position: flex;
+    text-align: right;
+    top: 1rem;
+    right: 1rem;
+    z-index: 1001;
+}
+
+.logo {
+    height: 4em;
+    width: 4em;
+}
+
+:root {
+    /* Couleurs principales */
+    --principal: #0c1d3c;
+    --principal-active: rgba(0, 66, 187, 0.2);
+    --principal-hover: rgba(0, 66, 187, 0.1);
+    --principal-texte: #FFFFFF;
+    
+    /* Textes */
+    --texte: #000000;
+    --titre: #000000;
+    --sous-titre: #707070;
+    
+    /* Boutons */
+    --bouton-details: #000000;
+    --bouton-details-texte: #FFFFFF;
+    
+    /* États */
+    --correct: rgb(101, 196, 102);
+    --moyen: #FFCC34;
+    --danger: #FF0000;
+    
+    /* Fond et bordures */
+    --background: #FFFFFF;
+    --bordure: #F4F4F4;
+    --ombre: 0 1px 3px rgba(0,0,0,0.3);
+    --rayon: 6px;
+    
+    /* Couleurs secondaires */
+    --secondaire: rgb(44,44,44);
+    --texte-secondaire: #FFFFFF;
+
+    --navbar-width: 280px;
+    
+    /* Authentification */
+    --auth-principale: #ffffff;
+    --auth-secondaire: #0C1D3C;
+    --auth-info: #FFCC34;
+    --auth-info-texte: #64748b;
+    --auth-texte: #1e293b;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--background);
+    color: var(--texte);
+    line-height: 1.6;
+    font-size: 16px;
+}
+
+/* ===========================================
+   LAYOUT ET STRUCTURE
+   =========================================== */
+
+.titre {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--titre);
+}
+
+.bienvenue {
+    display: flex;
+    justify-content: right;
+}
+
+.petit-titre {
+    font-size: 1.25rem;
+    font-weight: 600;
+    padding-bottom: 1rem;
+    padding-inline-start: 8px;
+    color: var(--titre);
+}
+
+.sous-titre {
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--sous-titre);
+    margin-bottom: 1.25rem;
+}
+
+.texte {
+    font-size: 0.975rem;
+    font-weight: 600;
+    color: var(--texte);
+    margin-bottom: 1.25rem;
+}
+
+.carte {
+    background: var(--background);
+    color: var(--texte);
+    border-radius: var(--rayon);
+    box-shadow: var(--ombre);
+    padding: 1.25rem;
+    border: 1px solid var(--bordure);
+    margin-bottom: 1.25rem;
+    margin-top: 1.25rem;
+}
+
+.stat-card {
+    background: var(--principal);
+    border: 1px solid var(--principal-hover);
+    color: var(--principal-texte);
+    border-radius: var(--rayon);
+    box-shadow: var(--ombre);
+    padding: 1.25rem;
+}
+
+.stat-card .number {
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+.probleme {
+    color: var(--danger);
+    font-weight: 700;
+}
+
+.principal {
+    color: var(--principal);
+    font-weight: 600;
+}
+
+.ok {
+    color: var(--correct);
+    font-weight: 600;
+}
+
+.waiting {
+    color: var(--moyen);
+    font-weight: 600;
+}
+
+.distribuer {
+    color: var(--correct);
+    font-weight: 600;
+}
+
+#graphiques {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5rem;
+}
+
+#graphiques p {
+    font-weight: 600;
+    padding: 10rem 3rem;
+}
+
+.stat-departement .nombre {
+    font-weight: 600;
+    color: var(--principal);
+}
+
+.stat-fournisseur .nom {
+    font-weight: 500;
+}
+
+.retard {
+    padding: 0.25rem 0.75rem;
+    border-radius: 1rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+.retard-ok {
+    background: var(--correct);
+    color: white;
+}
+
+.retard-moyen {
+    background: var(--moyen);
+    color: white;
+}
+
+.retard-probleme {
+    background: var(--danger);
+    color: white;
+}
+
+.lien {
+    color: var(--principal);
+    text-decoration: none;
+    font-weight: 600;
+    margin-top: 0.5rem;
+}
+
+.lien:hover {
+    text-decoration: underline;
+}
+
+#actions_rapide {
+    grid-column: 1 / -1;
+}
+
+#actions_rapide .bouton {
+    font-size: 1rem;
+    padding: 0.75rem 1rem;
+}
+
+#activite_recente {
+    grid-column: 1 / -1;
+}
+
+.entete-page {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.25rem;
+}
+
+.contenu-espace {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1.25rem;
+}
+
+/* ===========================================
+   TABLEAUX
+   =========================================== */
+.tableau-container {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: var(--rayon);
+    background: var(--background);
+}
+
+.tableau {
+    width: 100%;
+    min-width: 500px;
+    border-collapse: collapse;
+    background: var(--background);
+    border-radius: var(--rayon);
+    font-size: 0.95rem;
+}
+
+.tableau tr td:first-child {
+    text-align: left;
+    font-weight: 500;
+}
+
+.tableau tr td:last-child {
+    text-align: right;
+    font-weight: 600;
+}
+
+.tableau tr th:first-child {
+    text-align: left;
+    font-weight: 500;
+}
+
+#statut {
+    text-align: left;
+}
+
+#gerer {
+    text-align: center;
+}
+
+.tableau th,
+.tableau td {
+    padding: 0.75rem;
+    text-align: center;
+    border-bottom: 1px solid var(--bordure);
+}
+
+.tableau th {
+    background: var(--background);
+    font-weight: 600;
+    color: var(--titre);
+}
+
+.tableau td:first-child {
+    text-align: left;
+    font-weight: 500;
+}
+
+.tableau td:last-child,
+.tableau th:last-child {
+    text-align: right;
+    font-weight: 600;
+}
+
+/* ===========================================
+   GRILLES
+   =========================================== */
+.grille-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1rem;
+}
+
+/* ===========================================
+   FORMULAIRES
+   =========================================== */
+.formulaire.auth {
+    padding-left: 0.5rem;
+}
+
+#laisser-vide {
+    color: var(--sous-titre);
+    font-size: 0.75rem;
+}
+
+.form-groupe span {
+    color: darkred;
+    font-size: 1rem;
+    font-weight: 800;
+}
+
+.form-groupe {
+    margin-bottom: 1.25rem;
+}
+
+.form-groupe label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: var(--titre);
+}
+
+.input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 2px solid var(--bordure);
+    border-radius: var(--rayon);
+    background: var(--background);
+    font-family: 'Inter', sans-serif;
+    font-size: 0.875rem;
+    transition: border-color 0.2s ease;
+}
+
+.input:focus {
+    outline: none;
+    border-color: var(--principal);
+    box-shadow: 0 0 0 3px rgba(12, 29, 60, 0.1);
+}
+
+.bouton-formulaire {
+    display: flex;
+    gap: 0.625rem;
+    justify-content: flex-end;
+    margin-top: 1.25rem;
+    flex-wrap: wrap;
+}
+
+.formulaire-inline {
+    display: inline;
+    background: transparent;
+    padding: 0;
+    border-radius: 0;
+}
+
+/* ===========================================
+   BOUTONS
+   =========================================== */
+.bouton, .bouton-ok {
+    background: var(--secondaire);
+    color: var(--bouton-details-texte);
+    border: none;
+    padding: 0.625rem 1.25rem;
+    border-radius: var(--rayon);
+    font-weight: 500;
+    font-size: 0.875rem;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    line-height: 1;
+    font-family: inherit;
+    -webkit-appearance: none;
+    appearance: none;
+    transition: all 0.2s ease;
+}
+
+.bouton-ok {
+    background: var(--principal);
+    color: white;
+    font-weight: 600;
+}
+
+.bouton-ok:hover {
+    background: rgba(12, 29, 60, 0.8);
+}
+
+.bouton-actions {
+    width: 100px;
+    justify-content: center;
+}
+
+.bouton:hover {
+    background: var(--principal);
+}
+
+.bouton.correct {
+    background: darkgreen;
+    color: white;
+}
+
+.bouton.danger {
+    background: darkred;
+    color: white;
+}
+
+.bouton.moyen {
+    background: var(--moyen);
+    color: var(--texte);
+}
+
+/* ===========================================
+   BADGES
+   =========================================== */
+.badge {
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+.badge.correct {
+    background: var(--correct);
+    color: white;
+}
+
+.badge.moyen {
+    background: var(--moyen);
+    color: var(--texte);
+}
+
+.badge.danger {
+    background: var(--danger);
+    color: white;
+}
+
+/* Badge notifications navbar */
+.navbar-nav a .badge {
+    background: var(--danger);
+    color: white;
+    padding: 0.15rem 0.5rem;
+    border-radius: 10px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    margin-left: 0.5rem;
+    text-transform: none;
+}
+
+/* ===========================================
+   ALERTES
+   =========================================== */
+.alerte {
+    background: rgba(0, 66, 187, 0.8);
+    color: var(--principal-texte);
+    padding: 0.9375rem;
+    border-radius: var(--rayon);
+    margin-bottom: 1.25rem;
+    border-left: 4px solid;
+}
+
+.alerte-success, .alerte.success {
+    background: var(--correct);
+    color: white;
+    border-left-color: var(--correct);
+}
+
+.alerte-moyen, .alerte.warning {
+    background: var(--moyen);
+    color: var(--texte);
+    border-left-color: var(--moyen);
+}
+
+.alerte-danger, .alerte.error {
+    background: var(--danger);
+    color: white;
+    border-left-color: var(--danger);
+}
+
+.alerte-info {
+    background: var(--principal);
+    color: white;
+    border-left-color: var(--principal);
+}
+
+.message-vide {
+    text-align: center;
+    color: var(--sous-titre);
+    font-style: italic;
+    padding: 2.5rem 1.25rem;
+}
+
+/* ===========================================
+   NAVIGATION - Desktop
+   =========================================== */
+.navbar {
+    position: fixed;
+    left: 10px;
+    top: 10px;
+    height: auto;
+    bottom: 10px;
+    width: var(--navbar-width);
+    background: var(--principal);
+    color: var(--principal-texte);
+    padding: 1.25rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+    z-index: 1000;
+    border-radius: var(--rayon);
+    overflow-y: auto;
+}
+
+.navbar-titre {
+    display: flex;
+    align-items: center;
+    gap: 0.700rem;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: white;
+    text-decoration: none;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    padding-top: 0.5rem;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.confirm-delete-actions {
+    display: flex;
+    gap: 0.625rem;
+    justify-content: flex;
+    margin-top: 1.25rem;
+}
+
+.navbar-brand:hover {
+    color: #ddd;
+}
+
+.navbar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    flex: 1;
+}
+
+.navbar-nav a {
+    color: var(--principal-texte);
+    text-decoration: none;
+    padding: 0.75rem 1rem;
+    border-radius: var(--rayon);
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.95rem;
+}
+
+.navbar-nav a:hover,
+.navbar-nav a.active {
+    color: var(--principal-texte);
+}
+
+.navbar-nav a:hover {
+    background: var(--principal-hover);
+}
+
+.navbar-nav a.active {
+    background: var(--principal-active);
+    font-weight: 700;
+}
+
+.navbar-user {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    margin-top: auto;
+}
+
+.navbar-user .user-info {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.navbar-user span {
+    color: rgba(255,255,255,0.8);
+    font-size: 0.95rem;
+    font-weight: 600;
+}
+
+.navbar-user a {
+    color: rgba(255,255,255,0.8);
+    text-decoration: none;
+    font-size: 0.85rem;
+}
+
+.navbar-user a:hover {
+    color: white;
+}
+
+.navbar-user .profile-avatar {
+    width: 40px;
+    height: 40px;
+}
+
+/* Contenu principal décalé pour la navbar */
+.main-content {
+    margin-left: calc(var(--navbar-width) + 30px);
+    padding: 1.25rem;
+    min-height: 100vh;
+}
+
+/* Menu mobile toggle (caché par défaut) */
+.navbar-toggle {
+    display: none;
+    background: var(--principal);
+    color: white;
+    border: none;
+    padding: 0.75rem 1rem;
+    font-size: 1.5rem;
+    cursor: pointer;
+    border-radius: var(--rayon);
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    z-index: 1001;
+}
+
+/* ===========================================
+   PAGE AUTHENTIFICATION
+   =========================================== */
+body.auth-page .main-content {
+    margin-left: 0;
+    background: var(--auth-secondaire);
+    color: var(--auth-texte);
+    padding: 0;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+body.auth-page .logo {
+    display: none;
+}
+
+body.auth-page .alerte {
+    position: fixed;
+    top: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    max-width: 90%;
+    text-align: center;
+}
+
+.auth-card {
+    background: var(--auth-principale);
+    border: 1px solid var(--bordure);
+    border-radius: 0.75rem;
+    padding: 2rem;
+    box-shadow: var(--ombre);
+    text-align: left;
+    width: 100%;
+    max-width: 400px;
+    margin: 1rem;
+}
+
+.auth-card h1 {
+    text-align: left;
+    margin: 0rem;
+}
+
+.auth-card p {
+    color: var(--auth-info-texte);
+    text-align: left;
+}
+
+.auth-card .form-groupe label {
+    display: block;
+    color: var(--auth-texte);
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+.auth-card .form-groupe .input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--bordure);
+    border-radius: 0.5rem;
+    background: var(--auth-principale);
+    font-family: 'Inter', sans-serif;
+    font-size: 0.875rem;
+    transition: border-color 0.2s ease;
+}
+
+.auth-card .form-groupe .input:focus {
+    outline: none;
+    border-color: var(--principal);
+    box-shadow: 0 0 0 3px rgba(12, 29, 60, 0.1);
+}
+
+.auth-info {
+    background: var(--auth-info);
+    border: 1px solid var(--bordure);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    margin: 1.25rem 0rem;
+    text-align: left;
+}
+
+.auth-info strong {
+    color: var(--auth-texte);
+}
+
+.auth-accounts {
+    margin-top: 0.5rem;
+    padding-left: 1.25rem;
+    font-size: 0.875rem;
+}
+
+.auth-password {
+    margin-top: 0.5rem;
+    font-size: 0.875rem;
+    color: var(--auth-info-texte);
+}
+
+.auth-accounts code,
+.auth-password code {
+    background: var(--auth-principale);
+    border: 1px solid var(--bordure);
+    border-radius: 0.25rem;
+    padding: 0.125rem 0.375rem;
+    font-family: 'Monaco', 'Menlo', monospace;
+    font-size: 0.75rem;
+    color: var(--auth-texte);
+}
+
+#deconnexion {
+    font-size: 0.75rem;
+}
+
+/* ===========================================
+   PAGE DETAIL COLIS
+   =========================================== */
+.carte-colis-individuel img {
+    width: 5%;
+    min-width: 40px;
+}
+
+.carte-colis-individuel {
+    padding: 1.5rem;
+    padding-bottom: 0rem;
+}
+
+.carte-colis-individuel .texte {
+    font-size: 1rem;
+    padding-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+.carte-colis-individuel .petit-titre {
+    padding-bottom: 0rem;
+}
+
+.carte-colis-individuel .sous-titre {
+    padding-inline-start: 1rem;
+}
+
+#infos-colis-logo {
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+#infos-colis-logo .petit-titre.contenu-espace {
+    justify-content: flex-end;
+}
+
+.carte-colis-individuel #statut {
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+.lieu-livraison {
+    margin-left: auto;
+}
+
+.bouton-secondaire {
+    border-radius: 0rem;
+    background: white;
+    color: var(--bouton-details);
+    border: 0.5px solid var(--bouton-details);
+}
+
+.bouton-secondaire:hover {
+    background: rgba(0,0,0,0.9);
+    color: white;
+}
+
+span.flex {
+    font-size: 1rem;
+    gap: 1rem;
+}
+
+#rechercher {
+    margin-left: auto;
+}
+
+#rechercher-bouton {
+    margin-top: 1rem;
+}
+
+.bouton-actif {
+    background: var(--principal);
+    color: white;
+    border-color: var(--principal);
+}
+
+.petit-titre.sans-carte {
+    padding-bottom: 0rem;
+}
+
+.bouton.sans-carte {
+    margin-bottom: 1rem;
+    margin-left: 0.5rem;
+}
+
+.sans-carte {
+    margin-left: 0.5rem;
+}
+
+/* ===========================================
+   UTILITAIRES
+   =========================================== */
+.flex {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    flex-wrap: wrap;
+}
+
+.flex-between {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.625rem;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.text-muted {
+    color: var(--sous-titre);
+}
+
+/* ===========================================
+   RESPONSIVE - Tablette
+   =========================================== */
+@media (max-width: 1024px) {
+    :root {
+        --navbar-width: 240px;
+    }
+    
+    .navbar {
+        padding: 1rem;
+    }
+    
+    .navbar-titre {
+        font-size: 1.1rem;
+    }
+    
+    .navbar-nav a {
+        padding: 0.6rem 0.8rem;
+        font-size: 0.9rem;
+    }
+    
+    .grille-stats {
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    }
+}
+
+/* ===========================================
+   RESPONSIVE - Mobile
+   =========================================== */
+@media (max-width: 768px) {
+    :root {
+        --navbar-width: 100%;
+    }
+    
+    /* Navbar devient bandeau horizontal en haut */
+    .navbar {
+        position: fixed;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: auto;
+        height: auto;
+        max-height: 60px;
+        width: 100%;
+        border-radius: 0;
+        padding: 0.75rem 1rem;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        overflow: visible;
+    }
+    
+    .navbar.open {
+        max-height: 100vh;
+        flex-direction: column;
+        align-items: stretch;
+        padding-bottom: 1rem;
+        overflow-y: auto;
+    }
+    
+    .navbar-titre {
+        margin-bottom: 0;
+        padding: 0;
+        border-bottom: none;
+        font-size: 1rem;
+    }
+    
+    .navbar.open .navbar-titre {
+        margin-bottom: 1rem;
+        padding-bottom: 0.75rem;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    .navbar-nav {
+        display: none;
+        flex-direction: column;
+        width: 100%;
+    }
+    
+    .navbar.open .navbar-nav {
+        display: flex;
+    }
+    
+    .navbar-nav a {
+        padding: 0.75rem 1rem;
+    }
+    
+    .navbar-user {
+        display: none;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        padding-top: 1rem;
+        margin-top: 1rem;
+        width: 100%;
+    }
+    
+    .navbar.open .navbar-user {
+        display: flex;
+    }
+    
+    /* Bouton toggle menu */
+    .navbar-toggle {
+        display: block;
+        position: static;
+        background: transparent;
+        padding: 0.5rem;
+        font-size: 1.5rem;
+        line-height: 1;
+    }
+    
+    /* Contenu principal */
+    .main-content {
+        margin-left: 0;
+        margin-top: 70px;
+        padding: 1rem;
+    }
+    
+    /* Grilles */
+    .grille-stats {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.75rem;
+    }
+    
+    /* Tableaux */
+    .tableau-container {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    .tableau {
+        font-size: 0.85rem;
+        min-width: 500px;
+    }
+    
+    .tableau th,
+    .tableau td {
+        padding: 0.5rem;
+    }
+    
+    /* Mise en page générale */
+    .contenu-espace {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .titre {
+        font-size: 1.5rem;
+    }
+    
+    .petit-titre {
+        font-size: 1.1rem;
+    }
+    
+    /* Boutons */
+    .bouton-formulaire {
+        flex-direction: column;
+    }
+    
+    .bouton, .bouton-ok {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    #actions_rapide .flex {
+        flex-direction: column;
+    }
+    
+    #actions_rapide .bouton {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    /* Colis detail */
+    #infos-colis-logo {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .carte-colis-individuel #statut {
+        font-size: 1rem;
+    }
+    
+    .lieu-livraison {
+        margin-left: 0;
+    }
+    
+    /* Logo */
+    .bienvenue .logo {
+        height: 3em;
+        width: 3em;
+    }
+}
+
+/* ===========================================
+   RESPONSIVE - Petit mobile
+   =========================================== */
+@media (max-width: 480px) {
+    .main-content {
+        padding: 0.75rem;
+        margin-top: 60px;
+    }
+    
+    .grille-stats {
+        grid-template-columns: 1fr;
+    }
+    
+    .stat-card {
+        padding: 1rem;
+    }
+    
+    .stat-card .number {
+        font-size: 1.5rem;
+    }
+    
+    .carte {
+        padding: 1rem;
+        margin-top: 0.75rem;
+        margin-bottom: 0.75rem;
+    }
+    
+    .titre {
+        font-size: 1.25rem;
+    }
+    
+    .petit-titre {
+        font-size: 1rem;
+    }
+    
+    .tableau {
+        font-size: 0.75rem;
+        min-width: 400px;
+    }
+    
+    .bouton-actions {
+        width: 70px;
+        font-size: 0.75rem;
+        padding: 0.5rem;
+    }
+    
+    /* Auth page */
+    .auth-card {
+        padding: 1.5rem;
+        margin: 0.5rem;
+    }
+}

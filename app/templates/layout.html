@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Suivi Colis{% endblock %} - IUT</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='img/favicon.ico') }}">
+</head>
+<body class="{% if request.endpoint == 'login' %}auth-page{% endif %}">
+    {% if request.endpoint != 'login' %}
+    <nav class="navbar" id="navbar">
+        <a href="{{ url_for('home') }}" class="navbar-titre">
+            {% if session.user %}
+                {% if session.user.role == 'admin' %}
+                Administrateur
+                {% elif session.user.role == 'responsable_colis' %}
+                Responsable Colis
+                {% elif session.user.role == 'editeur' %}
+                Éditeur
+                {% elif session.user.role == 'demandeur' %}
+                Demandeur
+                {% endif %}
+            {% else %}
+            Suivi Colis
+            {% endif %}
+        </a>
+        
+        <!-- Bouton menu mobile -->
+        <button class="navbar-toggle" id="navbarToggle" aria-label="Menu">
+            <span id="menuIcon">☰</span>
+        </button>
+        
+    {% if session.user %}
+        <!-- Navigation selon le rôle -->
+        
+        {% if session.user.role == 'demandeur' %}
+        <!-- DEMANDEUR : Colis et commandes de son département (lecture seule) -->
+        <div class="navbar-nav">
+            <a href="{{ url_for('home') }}" class="{% if request.endpoint == 'home' %}active{% endif %}">Tableau de bord</a>
+            <a href="{{ url_for('colis_list') }}" class="{% if 'colis' in (request.endpoint or '') %}active{% endif %}">Mes colis</a>
+            <a href="{{ url_for('commandes_list') }}" class="{% if 'commande' in (request.endpoint or '') %}active{% endif %}">Mes commandes</a>
+            <a href="{{ url_for('notifications_list') }}" class="{% if 'notification' in (request.endpoint or '') %}active{% endif %}">
+                Notifications
+                {% if notifications_count > 0 %}
+                <span class="badge">{{ notifications_count }}</span>
+                {% endif %}
+            </a>
+        </div>
+        
+        {% elif session.user.role == 'editeur' %}
+        <!-- EDITEUR : Commandes et fournisseurs (CRUD) -->
+        <div class="navbar-nav">
+            <a href="{{ url_for('home') }}" class="{% if request.endpoint == 'home' %}active{% endif %}">Tableau de bord</a>
+            <a href="{{ url_for('commandes_list') }}" class="{% if 'commande' in (request.endpoint or '') %}active{% endif %}">Commandes</a>
+            <a href="{{ url_for('fournisseurs_list') }}" class="{% if 'fournisseur' in (request.endpoint or '') %}active{% endif %}">Fournisseurs</a>
+        </div>
+        
+        {% elif session.user.role == 'responsable_colis' %}
+        <!-- RESPONSABLE COLIS : Colis (CRUD), BL, commandes (lecture) -->
+        <div class="navbar-nav">
+            <a href="{{ url_for('home') }}" class="{% if request.endpoint == 'home' %}active{% endif %}">Tableau de bord</a>
+            <a href="{{ url_for('colis_list') }}" class="{% if 'colis' in (request.endpoint or '') and request.endpoint != 'colis_incidents' %}active{% endif %}">Colis</a>
+            <a href="{{ url_for('colis_incidents') }}" class="{% if request.endpoint == 'colis_incidents' %}active{% endif %}">Incidents</a>
+            <a href="{{ url_for('colis_scan') }}" class="{% if request.endpoint == 'colis_scan' %}active{% endif %}">Scanner</a>
+            <a href="{{ url_for('commandes_list') }}" class="{% if 'commande' in (request.endpoint or '') %}active{% endif %}">Commandes</a>
+        </div>
+
+        {% elif session.user.role == 'admin' %}
+        <!-- ADMIN : Tout - Tableau de bord unifié via home() -->
+        <div class="navbar-nav">
+            <a href="{{ url_for('home') }}" class="{% if request.endpoint in ['home', 'admin_dashboard'] %}active{% endif %}">Tableau de bord</a>
+            <a href="{{ url_for('colis_list') }}" class="{% if 'colis' in (request.endpoint or '') %}active{% endif %}">Colis</a>
+            <a href="{{ url_for('commandes_list') }}" class="{% if 'commande' in (request.endpoint or '') %}active{% endif %}">Commandes</a>
+            <a href="{{ url_for('fournisseurs_list') }}" class="{% if 'fournisseur' in (request.endpoint or '') %}active{% endif %}">Fournisseurs</a>
+            <a href="{{ url_for('admin_utilisateurs') }}" class="{% if 'utilisateur' in (request.endpoint or '') %}active{% endif %}">Utilisateurs</a>
+            <a href="{{ url_for('admin_departements') }}" class="{% if 'departement' in (request.endpoint or '') %}active{% endif %}">Départements</a>
+            <a href="{{ url_for('admin_reporting') }}" class="{% if 'reporting' in (request.endpoint or '') %}active{% endif %}">Rapports</a>
+        </div>
+        {% endif %}
+    {% endif %}
+        
+        <div class="navbar-user">
+            {% if session.user %}
+            <div class="user-info">
+                <img src="{{ url_for('static', filename='img/avatar.png') }}" alt="Avatar" class="profile-avatar">
+                <span>{{ session.user.prenom }}</span>
+            </div>
+            <a id="deconnexion" href="{{ url_for('logout') }}">Se déconnecter</a>
+            {% endif %} 
+        </div>
+    </nav>
+    {% endif %}
+    
+    <div class="main-content">
+        
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                <div class="alerte {{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <div class="bienvenue">
+            <a href="{{ url_for('home') }}" title="Accueil">
+                <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Logo IUT" class="logo">
+            </a>
+        </div>
+        {% block content %}{% endblock %}
+    </div>
+    
+    <!-- Script pour le menu mobile -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const navbar = document.getElementById('navbar');
+            const toggle = document.getElementById('navbarToggle');
+            const menuIcon = document.getElementById('menuIcon');
+            
+            if (toggle && navbar) {
+                toggle.addEventListener('click', function() {
+                    navbar.classList.toggle('open');
+                    menuIcon.textContent = navbar.classList.contains('open') ? '✕' : '☰';
+                });
+                
+                // Fermer le menu quand on clique sur un lien (mobile)
+                const navLinks = navbar.querySelectorAll('.navbar-nav a');
+                navLinks.forEach(function(link) {
+                    link.addEventListener('click', function() {
+                        if (window.innerWidth <= 768) {
+                            navbar.classList.remove('open');
+                            menuIcon.textContent = '☰';
+                        }
+                    });
+                });
+            }
+        });
+    </script>
+</body>
+</html>

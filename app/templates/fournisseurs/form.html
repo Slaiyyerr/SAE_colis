@@ -1,0 +1,52 @@
+{% extends 'layout.html' %}
+
+{% block title %}{% if fournisseur %}Modifier{% else %}Nouveau{% endif %} fournisseur{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="titre">{% if fournisseur %}Modifier {{ fournisseur.nom_societe }}{% else %}Nouveau fournisseur{% endif %}</h1>
+    
+    <div class="carte">
+        <form method="POST" class="formulaire">
+            <div class="form-groupe">
+                <label for="nom_societe">Nom de la société <span>*</span></label>
+                <input type="text" id="nom_societe" name="nom_societe" class="input"
+                       value="{{ fournisseur.nom_societe if fournisseur else '' }}" required
+                       placeholder="Ex: LDLC Pro">
+            </div>
+            
+            <div class="form-groupe">
+                <label for="contact_nom">Nom du contact</label>
+                <input type="text" id="contact_nom" name="contact_nom" class="input"
+                       value="{{ fournisseur.contact_nom if fournisseur else '' }}"
+                       placeholder="Ex: Jean Dupont">
+            </div>
+            
+            <div class="form-groupe">
+                <label for="telephone">Téléphone</label>
+                <input type="tel" id="telephone" name="telephone" class="input"
+                       value="{{ fournisseur.telephone if fournisseur else '' }}"
+                       placeholder="Ex: 01 23 45 67 89">
+            </div>
+            
+            <div class="form-groupe">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" class="input"
+                       value="{{ fournisseur.email if fournisseur else '' }}"
+                       placeholder="Ex: contact@fournisseur.fr">
+            </div>
+            
+            <div class="form-groupe">
+                <label for="notes_internes">Notes internes</label>
+                <textarea id="notes_internes" name="notes_internes" class="input" rows="4"
+                          placeholder="Délais habituels, qualité de service, remarques...">{{ fournisseur.notes_internes if fournisseur else '' }}</textarea>
+            </div>
+            
+            <div class="bouton-formulaire">
+                <button type="submit" class="bouton-ok">{% if fournisseur %}Enregistrer{% else %}Créer{% endif %}</button>
+                <a href="{{ url_for('fournisseurs_list') }}" class="bouton">Annuler</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

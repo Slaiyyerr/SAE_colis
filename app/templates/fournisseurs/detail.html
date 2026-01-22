@@ -1,0 +1,95 @@
+{% extends "layout.html" %}
+
+{% block title %}{{ fournisseur.nom_societe }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="titre">{{ fournisseur.nom_societe }}</h1>
+    
+    <div class="carte">
+        <h2 class="petit-titre">Informations</h2>
+        <table class="tableau">
+            <tr>
+                <th>Contact</th>
+                <td>{{ fournisseur.contact_nom or '-' }}</td>
+            </tr>
+            <tr>
+                <th>Téléphone</th>
+                <td>{{ fournisseur.telephone or '-' }}</td>
+            </tr>
+            <tr>
+                <th>Email</th>
+                <td>
+                    {% if fournisseur.email %}
+                    <a href="mailto:{{ fournisseur.email }}" class="lien">{{ fournisseur.email }}</a>
+                    {% else %}-{% endif %}
+                </td>
+            </tr>
+        </table>
+        
+        {% if fournisseur.notes_internes %}
+        <h2 class="petit-titre">Notes internes</h2>
+        <p class="texte">{{ fournisseur.notes_internes }}</p>
+        {% endif %}
+    </div>
+    
+    <!-- Liste des commandes de ce fournisseur -->
+    <div class="carte">
+        <h2 class="petit-titre">Commandes associées</h2>
+        {% if commandes %}
+        <div class="tableau-container">
+            <table class="tableau">
+                <thead>
+                    <tr>
+                        <th>N° BC</th>
+                        <th>Date</th>
+                        <th>Statut</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for cmd in commandes %}
+                    <tr>
+                        <td><strong>{{ cmd.numero_bc }}</strong></td>
+                        <td>{{ cmd.date_commande.strftime('%d/%m/%Y') if cmd.date_commande else '-' }}</td>
+                        <td>
+                            {% if cmd.statut_global == 'en_attente' %}
+                            <span class="waiting">En attente</span>
+                            {% elif cmd.statut_global == 'validee' %}
+                            <span class="ok">Validée</span>
+                            {% elif cmd.statut_global == 'non_validee' %}
+                            <span class="probleme">Refusée</span>
+                            {% elif cmd.statut_global == 'en_cours' %}
+                            <span class="principal">En cours</span>
+                            {% elif cmd.statut_global == 'recue' %}
+                            <span class="ok">Reçue</span>
+                            {% elif cmd.statut_global == 'annulee' %}
+                            <span class="probleme">Annulée</span>
+                            {% else %}
+                            {{ cmd.statut_global }}
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{{ url_for('commande_detail', id=cmd.id_commande) }}" class="bouton bouton-actions">Voir</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="message-vide">Aucune commande enregistrée pour ce fournisseur.</p>
+        {% endif %}
+    </div>
+    
+    <div class="flex">
+        <a href="{{ url_for('fournisseurs_list') }}" class="bouton">Retour</a>
+        {% if session.user.role in ['editeur', 'admin'] %}
+        <a href="{{ url_for('fournisseur_edit', id=fournisseur.id_fournisseur) }}" class="bouton">Modifier</a>
+        {% endif %}
+        {% if session.user.role == 'admin' %}
+        <a href="{{ url_for('fournisseur_delete', id=fournisseur.id_fournisseur) }}" class="bouton danger">Supprimer</a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

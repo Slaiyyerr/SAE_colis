@@ -1,0 +1,57 @@
+{% extends "layout.html" %}
+
+{% block title %}{{ titre if titre else 'Tous les colis' }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="contenu-espace marge-bas">
+        <h1 class="titre">{{ titre if titre else 'Tous les colis' }}</h1>
+    </div>
+    
+    <span class="flex">Filtres :
+        <a href="{{ url_for('colis_list') }}" class="bouton bouton-secondaire {% if request.endpoint == 'colis_list' and not request.args.get('statut') %} bouton-actif {% endif %}" type="button">Tous</a>
+        <a href="{{ url_for('colis_en_attente') }}" class="bouton bouton-secondaire {% if request.endpoint == 'colis_en_attente' %} bouton-actif {% endif %}" type="button">En attente</a>
+        <a href="{{ url_for('colis_a_distribuer') }}" class="bouton bouton-secondaire {% if request.endpoint == 'colis_a_distribuer' %} bouton-actif {% endif %}" type="button">À distribuer</a>
+        <a href="{{ url_for('colis_list', statut='livre') }}" class="bouton bouton-secondaire {% if request.endpoint == 'colis_list' and request.args.get('statut') == 'livre' %} bouton-actif {% endif %}" type="button">Livrés</a>
+        <a href="{{ url_for('colis_list', statut='probleme') }}" class="bouton bouton-secondaire {% if request.endpoint == 'colis_list' and request.args.get('statut') == 'probleme' %} bouton-actif {% endif %}" type="button">Problèmes</a>
+        <span id="rechercher">
+            <a href="{{ url_for('colis_search') }}" class="bouton bouton-secondaire" type="button">Rechercher</a>
+            {% if session.user.role in ['responsable_colis', 'admin'] %}
+            <a href="{{ url_for('colis_scan') }}" class="bouton bouton-secondaire" type="button">+ Scanner</a>
+            {% endif %}
+        </span>
+    </span>
+
+    {% for c in colis %}
+    <div class="carte carte-colis-individuel">
+        <div class="titre-colis"> 
+            <h2 class="petit-titre contenu-espace"> Colis № {{ c.num_suivi_transporteur or 'Sans numéro' }} <strong> {% if c.destination %} {{ c.destination.departement }} {% else %} Dpt. Inconnu {% endif %}</strong> </h2>
+            <h2 class="sous-titre"> Expédié par {{ c.nom_transporteur or 'Transporteur inconnu' }}</h2>
+        </div>
+
+        <div class="contenu-espace" id="infos-colis-logo">
+            <img src="{{ url_for('static', filename='img/colis.png') }}" alt="Colis" class="colis-image">
+            <h2 id="statut" class="{% if c.statut_actuel == 'livre' %}ok{% elif c.statut_actuel == 'probleme' %}probleme{% elif c.statut_actuel == 'en_distribution' %}principal{% elif c.statut_actuel == 'recu' %}waiting{% elif c.statut_actuel == 'attendu' %}waiting{% endif %}">
+                {% if c.statut_actuel == 'livre' %}Livré
+                {% elif c.statut_actuel == 'probleme' %}Problème
+                {% elif c.statut_actuel == 'en_distribution' %}En distribution
+                {% elif c.statut_actuel == 'recu' %}Reçu
+                {% elif c.statut_actuel == 'attendu' %}En attente
+                {% else %}{{ c.statut_actuel }}
+                {% endif %}
+            </h2>
+            <h2 class="petit-titre lieu-livraison">{% if c.destination %}{{ c.destination.lieu }}{% else %}Aucun lieu enregistré{% endif %}</h2>
+        </div>
+
+        <div class="contenu-espace">
+            <h2 class="texte">{% if c.destination and c.destination.demandeur %}Demandeur : {{ c.destination.demandeur }}{% else %}Aucun demandeur identifié{% endif %}</h2>
+            <a href="{{ url_for('colis_detail', id=c.id_colis) }}" class="bouton" type="button">+ Voir plus</a>
+        </div>
+    </div>
+    {% else %}
+    <div class="carte"> 
+        <p class="petit-titre sans-carte">Aucun colis</p>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

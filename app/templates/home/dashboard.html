@@ -1,0 +1,111 @@
+{% extends 'layout.html' %}
+
+{% block title %}Tableau de bord{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="titre">Tableau de bord</h1>
+
+    <!-- Statistiques globales -->
+    <div class="grille-stats">
+        <div class="stat-card">
+            <div class="number">{{ stats.total_commandes }}</div>
+            <div class="label">Commandes</div>
+        </div>
+        <div class="stat-card">
+            <div class="number">{{ stats.total_colis }}</div>
+            <div class="label">Colis</div>
+        </div>
+        <div class="stat-card">
+            <div class="number waiting">{{ stats.colis_en_attente }}</div>
+            <div class="label">En attente</div>
+        </div>
+        <div class="stat-card">
+            <div class="number distribuer">{{ stats.colis_a_distribuer }}</div>
+            <div class="label">À distribuer</div>
+        </div>
+        <div class="stat-card">
+            <div class="number probleme">{{ stats.colis_probleme }}</div>
+            <div class="label">
+                {% if stats.colis_probleme > 1 %} 
+                    Erreurs
+                {% else %}
+                    Erreur
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="grille-stats">
+        <!-- Colis par statut -->
+        <div class="carte">
+            <h2 class="petit-titre">Colis par statut</h2>
+            <table class="tableau">
+                <tr><td>Attendu</td><td>{{ stats.colis_par_statut.attendu }}</td></tr>
+                <tr><td>{% if stats.colis_par_statut.recu > 1 %}Reçus{% else %}Reçu{% endif %}</td><td>{{ stats.colis_par_statut.recu }}</td></tr>
+                <tr><td>En distribution</td><td class="principal">{{ stats.colis_par_statut.en_distribution }}</td></tr>
+                <tr><td>{% if stats.colis_par_statut.livre > 1 %}Livrés{% else %}Livré{% endif %}</td><td class="ok">{{ stats.colis_par_statut.livre }}</td></tr>
+                <tr><td>En erreur</td><td class="probleme">{{ stats.colis_par_statut.probleme }}</td></tr>
+            </table>
+        </div>
+        
+        <!-- Commandes par statut -->
+        <div class="carte">
+            <h2 class="petit-titre">Commandes par statut</h2>
+            <table class="tableau">
+                <tr><td>En attente</td><td>{{ stats.commandes_par_statut.en_attente }}</td></tr>
+                <tr><td>Validée</td><td>{{ stats.commandes_par_statut.validee }}</td></tr>
+                <tr><td>En cours</td><td class="principal">{{ stats.commandes_par_statut.en_cours }}</td></tr>
+                <tr><td>Reçue</td><td class="ok">{{ stats.commandes_par_statut.recue }}</td></tr>
+            </table>
+        </div>
+    </div>
+
+    <!-- Actions rapides -->
+    <div class="carte" id="actions_rapide">
+        <h2 class="petit-titre">Actions rapides</h2>
+        <div class="flex">
+            {% if session.user.role in ['editeur', 'admin'] %}
+            <a href="{{ url_for('commande_create') }}" class="bouton">+ Nouvelle commande</a>
+            {% endif %}
+            
+            {% if session.user.role in ['demandeur', 'responsable_colis', 'admin'] %}
+            <a href="{{ url_for('colis_en_attente') }}" class="bouton">Colis en attente</a>
+            <a href="{{ url_for('colis_a_distribuer') }}" class="bouton">À distribuer</a>
+            <a href="{{ url_for('colis_search') }}" class="bouton">Rechercher colis</a>
+            {% endif %}
+            
+            <a href="{{ url_for('commandes_list') }}" class="bouton">Voir les commandes</a>
+            
+            {% if session.user.role in ['editeur', 'admin'] %}
+            <a href="{{ url_for('fournisseurs_list') }}" class="bouton">Fournisseurs</a>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Activité récente -->
+    <div class="carte" id="activite_recente">
+        <h2 class="petit-titre">Activités récentes</h2>
+        {% if stats.activite_recente %}
+        <div class="tableau-container">
+            <table class="tableau">
+                <thead>
+                    <tr><th>Date</th><th>Action</th><th>Statut</th></tr>
+                </thead>
+                <tbody>
+                    {% for h in stats.activite_recente %}
+                    <tr>
+                        <td>{{ h.date_heure.strftime('%d/%m %H:%M') if h.date_heure else '-' }}</td>
+                        <td>{{ h.action }}</td>
+                        <td>{{ h.ancien_statut or '' }} → {{ h.nouveau_statut or '' }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="message-vide">Aucune activité récente.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
