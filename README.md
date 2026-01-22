@@ -260,7 +260,7 @@ SAE_colis/
 | **MOHAMMAD Rehan** | Base de données        | Création et gestion de la base de données, Développement des DAO                                     |
 | **BOUSLAMA Adel**  | DAO & Services         | Développement des DAO, logique métier, liaison avec les controllers                |
 | **KEBBICHE Rayan** | Services & Controllers | Développement des services et controllers, liaison back-end / front-end avec Jinja |
-| **BENANNI Fares** | Front-end              | Développement de l’interface utilisateur                                           |
+| **BENANNI Fares** | Front-end              | Développement de l’interface utilisateur, liaison Jinja                                           |
 | **ATANASE Gabin Ateba** | Modèles            | Développement des models                                          |
 
 
