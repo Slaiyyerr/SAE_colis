@@ -257,8 +257,8 @@ SAE_colis/
 ## Equipe de développement
 | Nom       | Rôle                   | Contributions                                                                      |
 | --------- | ---------------------- | ---------------------------------------------------------------------------------- |
-| **MOHAMMAD Rehan** | Base de données        | Création et gestion de la base de données, Développement des DAO                                     |
-| **BOUSLAMA Adel**  | DAO & Services         | Développement des DAO, logique métier, liaison avec les controllers                |
+| **MOHAMMAD Rehan** | DAO , Service         | , Développement des DAO et des Services ainsi que lien DAO Controller                                    |
+| **BOUSLAMA Adel**  | DAO et Base de données  Création et gestion de la BD      | Développement des DAO, logique métier, liaison avec les controllers                |
 | **KEBBICHE Rayan** | Services & Controllers | Développement des services et controllers, liaison back-end / front-end avec Jinja |
 | **BENANNI Fares** | Front-end              | Développement de l’interface utilisateur, liaison Jinja                                           |
 | **ATANASE Gabin Ateba** | Modèles            | Développement des models                                          |
