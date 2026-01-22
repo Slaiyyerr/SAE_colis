@@ -1,4 +1,4 @@
-\<a name\="top"\>\</a\>  
+
 \# Suivi Colis \- IUT Villetaneuse
 
 Application web de gestion et suivi des colis commandés par l'IUT de Villetaneuse.
