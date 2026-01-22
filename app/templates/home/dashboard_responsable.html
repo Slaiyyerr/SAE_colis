@@ -4,8 +4,8 @@
 
 {% block content %}
 <div class="container">
-    <h1 class="titre">Tableau de bord Responsable Colis</h1>
-    <p class="sous-titre">Gestion des receptions et distributions</p>
+    <h1 class="titre">Tableau de bord - Responsable colis</h1>
+    <p class="sous-titre">Gestion des réceptions et distributions</p>
 
     <!-- Statistiques colis -->
     <div class="grille-stats">
@@ -15,11 +15,11 @@
         </div>
         <div class="stat-card">
             <div class="number waiting">{{ stats.colis_attendus }}</div>
-            <div class="label">A receptionner</div>
+            <div class="label">À réceptionner</div>
         </div>
         <div class="stat-card">
             <div class="number waiting">{{ stats.colis_recus }}</div>
-            <div class="label">A distribuer</div>
+            <div class="label">À distribuer</div>
         </div>
         <div class="stat-card">
             <div class="number distribuer">{{ stats.colis_en_distribution }}</div>
@@ -34,13 +34,13 @@
     <div class="grille-stats">
         <!-- Colis a receptionner -->
         <div class="carte">
-            <h2 class="petit-titre">Colis a receptionner</h2>
+            <h2 class="petit-titre">Colis à réceptionner</h2>
             {% if stats.colis_a_receptionner %}
             <div class="tableau-container">
                 <table class="tableau">
                     <thead>
                         <tr>
-                            <th>N Suivi</th>
+                            <th>N° Suivi</th>
                             <th>Transporteur</th>
                             <th>Destination</th>
                             <th>Actions</th>
@@ -59,14 +59,14 @@
                 </table>
             </div>
             {% else %}
-            <p class="message-vide">Aucun colis en attente de reception.</p>
+            <p class="message-vide">Aucun colis en attente de réception.</p>
             {% endif %}
             <a href="{{ url_for('colis_en_attente') }}" class="lien">Voir tous les colis en attente</a>
         </div>
 
         <!-- Colis a distribuer -->
         <div class="carte">
-            <h2 class="petit-titre">Colis a distribuer</h2>
+            <h2 class="petit-titre">Colis reçus à distribuer</h2>
             {% if stats.colis_a_distribuer %}
             <div class="tableau-container">
                 <table class="tableau">
@@ -97,9 +97,9 @@
                 </table>
             </div>
             {% else %}
-            <p class="message-vide">Aucun colis a distribuer.</p>
+            <p class="message-vide">Aucun colis à distribuer.</p>
             {% endif %}
-            <a href="{{ url_for('colis_a_distribuer') }}" class="lien">Voir tous les colis a distribuer</a>
+            <a href="{{ url_for('colis_a_distribuer') }}" class="lien">Voir tous les colis à distribuer</a>
         </div>
     </div>
 
@@ -111,7 +111,7 @@
             <table class="tableau">
                 <thead>
                     <tr>
-                        <th>N Suivi</th>
+                        <th>N° Suivi</th>
                         <th>Transporteur</th>
                         <th>Notes</th>
                         <th>Actions</th>
@@ -123,7 +123,7 @@
                         <td><strong class="probleme">{{ c.num_suivi_transporteur or 'N/A' }}</strong></td>
                         <td>{{ c.nom_transporteur or '-' }}</td>
                         <td>{{ c.notes or '-' }}</td>
-                        <td><a href="{{ url_for('colis_detail', id=c.id_colis) }}" class="bouton danger bouton-actions">Gerer</a></td>
+                        <td><a href="{{ url_for('colis_detail', id=c.id_colis) }}" class="bouton danger bouton-actions">Gérer</a></td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -147,7 +147,7 @@
 
     <!-- Activite recente -->
     <div class="carte" id="activite_recente">
-        <h2 class="petit-titre">Activite recente</h2>
+        <h2 class="petit-titre">Activité récente</h2>
         {% if stats.activite_recente %}
         <div class="tableau-container">
             <table class="tableau">
@@ -170,7 +170,7 @@
             </table>
         </div>
         {% else %}
-        <p class="message-vide">Aucune activite recente.</p>
+        <p class="message-vide">Aucune activité récente.</p>
         {% endif %}
     </div>
 </div>
